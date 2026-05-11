@@ -1,0 +1,27 @@
+:root {
+	--bg-colour: #222222;
+}
+
+body {
+	background-color: var(--bg-colour);
+	color: #fff;
+}
+
+.movieContent {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.movieCard {
+	background-color: #fff;
+	display: flex;
+	flex-direction: column;
+	width: 300px;
+	border-radius: 10px;
+	margin: 10px;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+}
