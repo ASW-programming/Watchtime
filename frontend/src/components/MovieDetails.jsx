@@ -1,53 +1,70 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { searchTitleID } from "../utils/calls";
+import {
+	searchTitleID,
+	searchEpisodeCount,
+	searchSeasonCount,
+} from "../utils/calls";
+import { useState } from "react";
 
 function MovieDetails() {
 	const { id } = useParams();
+	const [loadingProgress, setLoadingProgress] = useState("");
 
 	const {
-		data: movie,
+		data: selectedTitle,
 		isLoading,
 		isError,
+		error,
 	} = useQuery({
-		queryKey: ["movies", id],
+		queryKey: ["specific", id],
 		queryFn: () => searchTitleID(id),
 	});
 
-	if (isLoading) return <p>Loading...</p>;
-	if (isError) return <p>Something went wrong.</p>;
-	if (!movie) return null;
+	// If its a TV Show, fetch number of seasons.
+
+	if (isLoading) return <p className="waitingState">Loading...</p>;
+	if (isError) return <p className="waitingState">Something went wrong.</p>;
 
 	const imageUrl =
-		movie.primaryImage?.url ??
+		selectedTitle.primaryImage?.url ??
 		"https://clasebcn.com/wp-content/uploads/2020/04/harold-thumb.jpg";
-	const rating = movie.rating?.aggregateRating ?? "No rating";
+	const rating = selectedTitle.rating?.aggregateRating ?? "No rating";
 
 	return (
-		<div>
-			<h2>{movie.primaryTitle}</h2>
-			<img src={imageUrl} style={{ height: "400px" }}></img>
-			<p>First released: {movie.startYear}</p>
-			<p>Latest release: {movie.endYear}</p>
-			<ul>
-				Genres:{" "}
-				{movie.genres.map((g, index) => (
-					<li key={index}>{g}</li>
-				))}
-			</ul>
-			<p>Rating: {rating}</p>
-			<p>Plot: {movie.plot}</p>
-			<h3>Stars</h3>
-			<ul>
-				{movie.stars.map((s) => (
-					<div key={s.id}>
-						<img
-							src={s.primaryImage.url}
-							style={{ width: "150px" }}></img>
-						<li key={s.id}>{s.displayName}</li>
+		<div className="serieDetails">
+			<div className="informationLayout">
+				<img src={imageUrl} id="showIMG" />
+				<div className="serieInformation">
+					<h2>{selectedTitle.primaryTitle}</h2>
+					<div className="releaseYears">
+						<p className="firstRelease">
+							Released: {selectedTitle.startYear}
+						</p>
 					</div>
-				))}
-			</ul>
+					<ul className="genreList">
+						Genres:{" "}
+						{selectedTitle.genres.map((genre, index) => (
+							<li key={index}>{genre}</li>
+						))}
+					</ul>
+					<p>Type: {selectedTitle.type}</p>
+					<p>Rating: {rating}</p>
+					<p className="plot">Plot: {selectedTitle.plot}</p>
+					<p>Runtime: {selectedTitle.runtimeSeconds / 60} mins.</p>
+				</div>
+			</div>
+			<div className="starsLayout">
+				<h3>Stars</h3>
+				<ul>
+					{selectedTitle.stars.map((s) => (
+						<li key={s.id} className="starsList">
+							<img src={s.primaryImage.url} className="starIMG" />
+							<p className="starName">{s.displayName}</p>
+						</li>
+					))}
+				</ul>
+			</div>
 		</div>
 	);
 }
