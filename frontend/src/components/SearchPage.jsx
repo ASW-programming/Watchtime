@@ -3,11 +3,13 @@ import BaseBtn from "./BaseBtn";
 import TextInput from "./TextInput";
 import { searchTitle } from "../utils/calls";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { HomeIcon } from "../assets/Icons.jsx";
 
 function SearchPage() {
 	const [searchQuery, setSearchQuery] = useState();
 	const [inputValue, setInputValue] = useState("");
+	const navigate = useNavigate();
 
 	const {
 		data: movie,
@@ -22,7 +24,20 @@ function SearchPage() {
 	console.log(`This is the data:`, movie);
 
 	if (isLoading) return <p className="waitingState">Loading...</p>;
-	if (isError) return <p className="waitingState"> Something went wrong.</p>;
+	if (isError)
+		return (
+			<div>
+				<p className="waitingState"> Something went wrong.</p>
+				<BaseBtn
+					className="homepageBtn"
+					icon={<HomeIcon size="32px" />}
+					title="Homepage"
+					onClick={() => {
+						setSearchQuery(null);
+					}}
+				/>
+			</div>
+		);
 
 	return (
 		<div>

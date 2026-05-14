@@ -1,9 +1,9 @@
-const IMDB_URL = "https://api.imdbapi.dev";
+const TITLE_URL = "https://api.imdbapi.dev";
 const limit = 10;
 
 export async function searchTitle(searchQuery) {
 	const response = await fetch(
-		`${IMDB_URL}/search/titles?query=${searchQuery}&limit=${limit}`,
+		`${TITLE_URL}/search/titles?query=${searchQuery}&limit=${limit}`,
 	);
 
 	if (!response.ok) {
@@ -14,7 +14,7 @@ export async function searchTitle(searchQuery) {
 }
 
 export async function searchTitleID(searchID) {
-	const response = await fetch(`${IMDB_URL}/titles/${searchID}`);
+	const response = await fetch(`${TITLE_URL}/titles/${searchID}`);
 
 	if (!response.ok) {
 		throw new Error(`HTTP error: ${response.status}`);
@@ -24,7 +24,7 @@ export async function searchTitleID(searchID) {
 }
 
 export async function searchSeasonCount(id) {
-	const response = await fetch(`${IMDB_URL}/titles/${id}/seasons`);
+	const response = await fetch(`${TITLE_URL}/titles/${id}/seasons`);
 	if (!response.ok) {
 		throw new Error(`HTTP error: ${response.status}`);
 	}
@@ -34,13 +34,13 @@ export async function searchSeasonCount(id) {
 export async function searchEpisodeCount(id, seasons, onProgress) {
 	const allEpisodes = [];
 
-	// Loop every season
-	for (const s of seasons) {
-		// Update UI with which season its currently being fetched
-		onProgress?.(`Hämtar säsong ${s.season} av ${seasons.length}...`);
+	// Update UI with which season its currently being fetched
+	for (let i = 0; i < seasons.length; i++) {
+		const s = seasons[i];
+		onProgress?.(i, seasons.length);
 
 		// Build correct URL with season and pagesize
-		const url = new URL(`${IMDB_URL}/titles/${id}/episodes`);
+		const url = new URL(`${TITLE_URL}/titles/${id}/episodes`);
 		url.searchParams.set("pageSize", "50");
 		url.searchParams.set("season", s.season);
 
@@ -51,7 +51,6 @@ export async function searchEpisodeCount(id, seasons, onProgress) {
 
 			// If rate is being limitied, wait one sec and try again
 			if (res.status === 429) {
-				onProgress?.(`Rate limited, väntar och försöker igen...`);
 				await new Promise((resolve) => setTimeout(resolve, 1000));
 				retries--;
 				continue;
