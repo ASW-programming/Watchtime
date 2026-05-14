@@ -9,7 +9,13 @@ function BaseBtn({
 	disabled,
 }) {
 	return (
-		<button>
+		<button
+			id={id}
+			className={className}
+			title={title}
+			type={type}
+			onClick={onClick}
+			disabled={disabled}>
 			{text}
 			{icon}
 		</button>
