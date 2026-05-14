@@ -1,10 +1,19 @@
+* {
+	box-sizing: border-box;
+}
+
 :root {
 	--bg-colour: #222222;
+	--card-colour: #7f7f7f;
 }
 
 body {
 	background-color: var(--bg-colour);
 	color: #fff;
+}
+
+li {
+	list-style: none;
 }
 
 .movieContent {
@@ -13,7 +22,7 @@ body {
 }
 
 .movieCard {
-	background-color: #fff;
+	background-color: var(--card-colour);
 	display: flex;
 	flex-direction: column;
 	width: 300px;
@@ -24,4 +33,129 @@ body {
 	text-align: center;
 	text-decoration: none;
 	color: black;
+}
+
+.serieDetails {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: fit-content;
+	margin: 40px auto; /* ← auto centrerar horisontellt, 40px ger lite luft uppe */
+	padding: 20px;
+}
+
+.informationLayout {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	gap: 20px;
+	background-color: var(--card-colour);
+	color: black;
+	padding: 20px;
+	border-radius: 10px;
+}
+.serieDetails img {
+	height: 400px;
+	object-fit: cover;
+	padding: 0;
+	border-radius: 5px;
+	box-shadow: 5px 5px 5px black;
+}
+
+.serieInformation {
+	text-align: left;
+	width: 300px;
+}
+
+.releaseYears {
+	display: flex;
+	flex-direction: column;
+
+	padding-left: 0;
+	margin-left: 0;
+	text-align: left;
+	list-style: none;
+}
+
+.firstRelease,
+.latestRelease {
+	margin: 0;
+	padding: 0;
+	gap: 0;
+}
+
+.genreList {
+	padding-left: 0;
+	margin-left: 0;
+	text-align: left;
+	list-style: none;
+}
+
+.plot {
+	width: 100%;
+	text-align: justify;
+	max-width: 400px;
+}
+
+.starsLayout {
+	background-color: var(--card-colour);
+	color: black;
+	padding: 20px;
+	border-radius: 10px;
+	text-align: center;
+	margin: 10px;
+}
+
+.starsList {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 0;
+	margin: 0;
+	gap: 0;
+	width: 50%;
+}
+
+.starsList img {
+	width: 100px;
+	height: 30%;
+	padding: 0;
+	margin: 10px;
+}
+
+.seasonsLayout {
+	display: flex;
+	flex-wrap: wrap;
+	width: 80%;
+	text-align: left;
+}
+
+.seasonsLayout h3 {
+	text-align: left;
+}
+
+.seasonsLayout ul {
+	padding-left: 0;
+	list-style-position: inside;
+}
+
+.episodeList {
+	padding: 0;
+	margin: 0;
+	text-align: start;
+}
+
+.specificSeason {
+	margin: 10px;
+	padding: 10px;
+	width: 250px;
+	background-color: var(--card-colour);
+}
+
+.waitingState {
+	display: flex;
+	font-size: 64px;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
 }

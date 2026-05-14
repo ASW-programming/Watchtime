@@ -21,8 +21,8 @@ function SearchPage() {
 
 	console.log(`This is the data:`, movie);
 
-	if (isLoading) return <p>Loading...</p>;
-	if (isError) return <p>Something went wrong.</p>;
+	if (isLoading) return <p className="waitingState">Loading...</p>;
+	if (isError) return <p className="waitingState"> Something went wrong.</p>;
 
 	return (
 		<div>
@@ -45,7 +45,7 @@ function SearchPage() {
 					const rating = title.rating?.aggregateRating ?? "No rating";
 
 					return (
-						<Link to={`/movie/${title.id}`} key={title.id}>
+						<Link to={`/${title.type}/${title.id}`} key={title.id}>
 							<div className="movieCard">
 								<h2>{title.primaryTitle}</h2>
 								<img
