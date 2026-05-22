@@ -1,6 +1,10 @@
 {
-  "dependencies": {
-    "concurrently": "^9.2.1",
-    "dotenv": "^17.4.2"
-  }
+	"name": "watchtime",
+	"scripts": {
+		"dev": "concurrently \"cd backend && nodemon server.js\" \"cd frontend && npm run dev\"",
+		"install:all": "cd backend && npm install && cd ../frontend && npm install"
+	},
+	"devDependencies": {
+		"concurrently": "^9.2.1"
+	}
 }
