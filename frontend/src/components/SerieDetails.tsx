@@ -6,12 +6,49 @@ import {
 	searchSeasonCount,
 } from "../utils/calls";
 import { useState } from "react";
-import { HomeIcon } from "../assets/Icons.jsx";
-import BaseBtn from "./BaseBtn.jsx";
+import { HomeIcon } from "../assets/Icons";
+import BaseBtn from "./BaseBtn";
+
+interface Star {
+	id: string;
+	displayName: string;
+	primaryImage: {
+		url: string;
+	};
+}
+
+interface Title {
+	primaryTitle: string;
+	startYear: number;
+	endYear?: number;
+	type: string;
+	plot: string;
+	runtimeSeconds: number;
+	genres: string[];
+	primaryImage?: { url: string };
+	rating?: { aggregateRating: number };
+	stars: Star[];
+}
+
+interface Season {
+	seasons: number;
+}
+
+interface Episode {
+	id: string;
+	title: string;
+	season: number;
+	episodeNumber: number;
+}
+
+interface EpisodesResult {
+	episodes: Episode[];
+}
+
+type EpisodesBySeason = Record<number, Episode[]>;
 
 function SerieDetails() {
-	const { id } = useParams();
-	const [loadingProgress, setLoadingProgress] = useState("");
+	const { id } = useParams<{ id: string }>();
 	const [progress, setProgress] = useState({ current: 0, total: 0 });
 	const navigate = useNavigate();
 
@@ -19,8 +56,7 @@ function SerieDetails() {
 		data: selectedTitle,
 		isLoading,
 		isError,
-		error,
-	} = useQuery({
+	} = useQuery<Title>({
 		queryKey: ["specific", id],
 		queryFn: () => searchTitleID(id),
 		staleTime: Infinity,
@@ -30,31 +66,27 @@ function SerieDetails() {
 		data: totalSeasons,
 		isLoading: isLoadingSeasons,
 		isError: isErrorSeasons,
-		error: errorSeasons,
-		error: errorEpisodes,
-	} = useQuery({
+	} = useQuery<Season>({
 		queryKey: ["seasons", id],
 		queryFn: () => searchSeasonCount(id),
 		enabled: selectedTitle?.type === "tvSeries",
 		staleTime: Infinity,
 	});
 
-	// Fetch all Episodes from the series if totalSeasons is finished.
 	const {
 		data: episodes,
 		isLoading: isLoadingEpisodes,
 		isError: isErrorEpisodes,
-	} = useQuery({
+	} = useQuery<EpisodesResult>({
 		queryKey: ["episodes", id],
-		queryFn: () => {
-			return searchEpisodeCount(
+		queryFn: () =>
+			searchEpisodeCount(
 				id,
-				totalSeasons.seasons,
-				(current, total) => {
+				totalSeasons!.seasons,
+				(current: number, total: number) => {
 					setProgress({ current, total });
 				},
-			);
-		},
+			),
 		enabled: selectedTitle?.type === "tvSeries" && !!totalSeasons,
 		staleTime: Infinity,
 	});
@@ -63,6 +95,7 @@ function SerieDetails() {
 		return <p className="waitingState">Loading...</p>;
 	if (isError || isErrorSeasons)
 		return <p className="waitingState">Something went wrong.</p>;
+	if (!selectedTitle) return null;
 
 	const imageUrl =
 		selectedTitle.primaryImage?.url ??
@@ -91,15 +124,12 @@ function SerieDetails() {
 	if (isErrorEpisodes)
 		return <p className="waitingState">Something went wrong.</p>;
 
-	// Add episodes from one big list into separate objects per season.
-	const episodesBySeason = episodes.episodes.reduce((acc, episode) => {
-		// Gather season number
+	const episodesBySeason: EpisodesBySeason = (
+		episodes?.episodes ?? []
+	).reduce<EpisodesBySeason>((acc, episode) => {
 		const season = episode.season;
-		// If the season doesnt exist we create an empty array, otherwise do nothing.
 		if (!acc[season]) acc[season] = [];
-		// Add episode to the array
 		acc[season].push(episode);
-		// Return current object for next iteration.
 		return acc;
 	}, {});
 
@@ -165,9 +195,7 @@ function SerieDetails() {
 				className="homepageBtn"
 				icon={<HomeIcon size="32px" />}
 				title="Homepage"
-				onClick={() => {
-					navigate("/");
-				}}
+				onClick={() => navigate("/")}
 			/>
 		</div>
 	);
