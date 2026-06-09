@@ -5,6 +5,20 @@ const mediumHeight = "25px";
 const largeWidth = "32px";
 const largeHeight = "32px";
 
+// Props-typer för ikoner som tar emot props
+interface SizeProps {
+	size: string;
+}
+
+interface TransformProps {
+	transform?: string;
+}
+
+interface SortIconProps {
+	transform?: string;
+	style?: React.CSSProperties;
+}
+
 export function SearchIcon() {
 	return (
 		<svg
@@ -17,17 +31,14 @@ export function SearchIcon() {
 				stroke="none"
 				strokeWidth="1"
 				fill="none"
-				fillRule="evenodd"
-				sketch:type="MSPage">
+				fillRule="evenodd">
 				<g
 					id="Icon-Set"
-					sketch:type="MSLayerGroup"
 					transform="translate(-256.000000, -1139.000000)"
 					fill="#000000">
 					<path
 						d="M269.46,1163.45 C263.17,1163.45 258.071,1158.44 258.071,1152.25 C258.071,1146.06 263.17,1141.04 269.46,1141.04 C275.75,1141.04 280.85,1146.06 280.85,1152.25 C280.85,1158.44 275.75,1163.45 269.46,1163.45 L269.46,1163.45 Z M287.688,1169.25 L279.429,1161.12 C281.591,1158.77 282.92,1155.67 282.92,1152.25 C282.92,1144.93 276.894,1139 269.46,1139 C262.026,1139 256,1144.93 256,1152.25 C256,1159.56 262.026,1165.49 269.46,1165.49 C272.672,1165.49 275.618,1164.38 277.932,1162.53 L286.224,1170.69 C286.629,1171.09 287.284,1171.09 287.688,1170.69 C288.093,1170.3 288.093,1169.65 287.688,1169.25 L287.688,1169.25 Z"
-						id="search"
-						sketch:type="MSShapeGroup"></path>
+						id="search"></path>
 				</g>
 			</g>
 		</svg>
@@ -176,7 +187,7 @@ export function EmptyListIcon() {
 	);
 }
 
-export function ArrowIcon({ transform }) {
+export function ArrowIcon({ transform }: TransformProps) {
 	return (
 		<svg
 			width={largeWidth}
@@ -190,17 +201,14 @@ export function ArrowIcon({ transform }) {
 				stroke="none"
 				strokeWidth="1"
 				fill="none"
-				fillRule="evenodd"
-				sketch:type="MSPage">
+				fillRule="evenodd">
 				<g
 					id="Icon-Set"
-					sketch:type="MSLayerGroup"
 					transform="translate(-256.000000, -1087.000000)"
 					fill="#000000ff">
 					<path
 						d="M279,1102 L268.414,1102 L272.536,1097.88 C272.926,1097.49 272.926,1096.86 272.536,1096.46 C272.145,1096.07 271.512,1096.07 271.121,1096.46 L265.464,1102.12 C265.225,1102.36 265.15,1102.69 265.205,1103 C265.15,1103.31 265.225,1103.64 265.464,1103.88 L271.121,1109.54 C271.512,1109.93 272.145,1109.93 272.536,1109.54 C272.926,1109.15 272.926,1108.51 272.536,1108.12 L268.414,1104 L279,1104 C279.552,1104 280,1103.55 280,1103 C280,1102.45 279.552,1102 279,1102 L279,1102 Z M272,1117 C264.268,1117 258,1110.73 258,1103 C258,1095.27 264.268,1089 272,1089 C279.732,1089 286,1095.27 286,1103 C286,1110.73 279.732,1117 272,1117 L272,1117 Z M272,1087 C263.164,1087 256,1094.16 256,1103 C256,1111.84 263.164,1119 272,1119 C280.836,1119 288,1111.84 288,1103 C288,1094.16 280.836,1087 272,1087 L272,1087 Z"
-						id="arrow-left-circle"
-						sketch:type="MSShapeGroup"></path>
+						id="arrow-left-circle"></path>
 				</g>
 			</g>
 		</svg>
@@ -223,7 +231,7 @@ export function EnterIcon() {
 	);
 }
 
-export function HomeIcon({ size }) {
+export function HomeIcon({ size }: SizeProps) {
 	return (
 		<svg width={size} height={size} viewBox="0 0 24 24" fill="none">
 			<path
@@ -341,7 +349,7 @@ export function ClearListIcon() {
 	);
 }
 
-export function SortIcon({ transform, style }) {
+export function SortIcon({ transform, style }: SortIconProps) {
 	return (
 		<svg
 			width={mediumWidth}

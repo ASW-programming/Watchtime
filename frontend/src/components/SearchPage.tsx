@@ -2,39 +2,51 @@ import { useQuery } from "@tanstack/react-query";
 import BaseBtn from "./BaseBtn";
 import TextInput from "./TextInput";
 import { searchTitle } from "../utils/calls";
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { HomeIcon } from "../assets/Icons.jsx";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { HomeIcon } from "../assets/Icons";
+
+interface Title {
+	id: string;
+	primaryTitle: string;
+	type: string;
+	startYear: number;
+	primaryImage?: {
+		url: string;
+	};
+	rating?: {
+		aggregateRating: number;
+	};
+}
+
+interface SearchResult {
+	titles: Title[];
+}
 
 function SearchPage() {
-	const [searchQuery, setSearchQuery] = useState();
-	const [inputValue, setInputValue] = useState("");
-	const navigate = useNavigate();
+	const [searchQuery, setSearchQuery] = useState<string | null>(null);
+	const [inputValue, setInputValue] = useState<string>("");
 
 	const {
 		data: movie,
 		isLoading,
 		isError,
-	} = useQuery({
+	} = useQuery<SearchResult>({
 		queryKey: ["movies", searchQuery],
-		queryFn: () => searchTitle(searchQuery),
+		queryFn: () => searchTitle(searchQuery!),
 		enabled: !!searchQuery,
 	});
-
-	console.log(`This is the data:`, movie);
 
 	if (isLoading) return <p className="waitingState">Loading...</p>;
 	if (isError)
 		return (
 			<div>
-				<p className="waitingState"> Something went wrong.</p>
+				<p className="waitingState">Something went wrong.</p>
 				<BaseBtn
 					className="homepageBtn"
 					icon={<HomeIcon size="32px" />}
 					title="Homepage"
-					onClick={() => {
-						setSearchQuery(null);
-					}}
+					onClick={() => setSearchQuery(null)}
 				/>
 			</div>
 		);
@@ -42,13 +54,15 @@ function SearchPage() {
 	return (
 		<div>
 			<form
-				onSubmit={(e) => {
+				onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
 					e.preventDefault();
 					setSearchQuery(inputValue);
 				}}>
 				<TextInput
 					placeholder="Write search terms here"
-					onChange={(e) => setInputValue(e.target.value)}
+					onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+						setInputValue(e.target.value)
+					}
 				/>
 				<BaseBtn text="Click Me" type="submit" />
 			</form>
@@ -58,7 +72,6 @@ function SearchPage() {
 						title.primaryImage?.url ??
 						"https://clasebcn.com/wp-content/uploads/2020/04/harold-thumb.jpg";
 					const rating = title.rating?.aggregateRating ?? "No rating";
-
 					return (
 						<Link to={`/${title.type}/${title.id}`} key={title.id}>
 							<div className="movieCard">

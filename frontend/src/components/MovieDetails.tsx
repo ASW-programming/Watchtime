@@ -1,36 +1,55 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import {
-	searchTitleID,
-	searchEpisodeCount,
-	searchSeasonCount,
-} from "../utils/calls";
-import { useState } from "react";
+import { searchTitleID } from "../utils/calls";
 import BaseBtn from "./BaseBtn";
-import { HomeIcon } from "../assets/Icons.jsx";
+import { HomeIcon } from "../assets/Icons.tsx";
+
+// Typer för API-datan
+interface Star {
+	id: string;
+	displayName: string;
+	primaryImage: {
+		url: string;
+	};
+}
+
+interface Title {
+	primaryTitle: string;
+	startYear: number;
+	type: string;
+	plot: string;
+	runtimeSeconds: number;
+	genres: string[];
+	primaryImage?: {
+		url: string;
+	};
+	rating?: {
+		aggregateRating: number;
+	};
+	stars?: Star[];
+}
 
 function MovieDetails() {
-	const { id } = useParams();
+	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 
 	const {
 		data: selectedTitle,
 		isLoading,
 		isError,
-		error,
-	} = useQuery({
+	} = useQuery<Title>({
 		queryKey: ["specific", id],
 		queryFn: () => searchTitleID(id),
 	});
 
-	// If its a TV Show, fetch number of seasons.
-
 	if (isLoading) return <p className="waitingState">Loading...</p>;
 	if (isError) return <p className="waitingState">Something went wrong.</p>;
+	if (!selectedTitle) return null;
 
 	const imageUrl =
 		selectedTitle.primaryImage?.url ??
 		"https://clasebcn.com/wp-content/uploads/2020/04/harold-thumb.jpg";
+
 	const rating = selectedTitle.rating?.aggregateRating ?? "No rating";
 
 	return (
@@ -78,9 +97,7 @@ function MovieDetails() {
 				className="homepageBtn"
 				icon={<HomeIcon size="32px" />}
 				title="Homepage"
-				onClick={() => {
-					navigate("/");
-				}}
+				onClick={() => navigate("/")}
 			/>
 		</div>
 	);

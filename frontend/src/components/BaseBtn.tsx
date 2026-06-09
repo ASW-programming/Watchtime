@@ -1,3 +1,14 @@
+interface BaseBtnProps {
+	id?: string;
+	className?: string;
+	title?: string;
+	type?: "button" | "submit" | "reset";
+	text?: string;
+	icon?: React.ReactNode;
+	onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+	disabled?: boolean;
+}
+
 function BaseBtn({
 	id,
 	className,
@@ -7,7 +18,7 @@ function BaseBtn({
 	icon,
 	onClick,
 	disabled,
-}) {
+}: BaseBtnProps) {
 	return (
 		<button
 			id={id}
