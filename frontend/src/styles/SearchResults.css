@@ -1,0 +1,43 @@
+.waitingState {
+	display: flex;
+	font-size: 64px;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+}
+
+.movieContent {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.movieCard {
+	background-color: var(--card-colour);
+	display: flex;
+	flex-direction: column;
+	width: 90vw;
+	border-radius: 5%;
+	margin: 0.5rem;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	font-size: 1.5rem;
+	font-family: sans-serif;
+}
+
+.thumbnail {
+	width: 70%;
+	height: auto;
+}
+
+.infoList {
+	list-style: none;
+	text-align: center;
+	justify-content: center;
+	width: fit-content;
+	margin: 0 auto;
+	padding: 0 1rem;
+}

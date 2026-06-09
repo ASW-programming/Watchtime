@@ -20,25 +20,6 @@ button {
 	border: none;
 }
 
-.movieContent {
-	display: flex;
-	flex-wrap: wrap;
-}
-
-.movieCard {
-	background-color: var(--card-colour);
-	display: flex;
-	flex-direction: column;
-	width: 300px;
-	border-radius: 10px;
-	margin: 10px;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	text-decoration: none;
-	color: black;
-}
-
 .serieDetails {
 	display: flex;
 	flex-direction: column;
@@ -154,14 +135,6 @@ button {
 	padding: 10px;
 	width: 250px;
 	background-color: var(--card-colour);
-}
-
-.waitingState {
-	display: flex;
-	font-size: 64px;
-	align-items: center;
-	justify-content: center;
-	min-height: 100vh;
 }
 
 .progressContainer {

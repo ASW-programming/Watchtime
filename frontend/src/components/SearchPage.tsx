@@ -1,94 +1,38 @@
-import { useQuery } from "@tanstack/react-query";
+import "../styles/SearchPage.css";
 import BaseBtn from "./BaseBtn";
 import TextInput from "./TextInput";
-import { searchTitle } from "../utils/calls";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { HomeIcon } from "../assets/Icons";
-
-interface Title {
-	id: string;
-	primaryTitle: string;
-	type: string;
-	startYear: number;
-	primaryImage?: {
-		url: string;
-	};
-	rating?: {
-		aggregateRating: number;
-	};
-}
-
-interface SearchResult {
-	titles: Title[];
-}
+import { useNavigate } from "react-router-dom";
 
 function SearchPage() {
-	const [searchQuery, setSearchQuery] = useState<string | null>(null);
 	const [inputValue, setInputValue] = useState<string>("");
-
-	const {
-		data: movie,
-		isLoading,
-		isError,
-	} = useQuery<SearchResult>({
-		queryKey: ["movies", searchQuery],
-		queryFn: () => searchTitle(searchQuery!),
-		enabled: !!searchQuery,
-	});
-
-	if (isLoading) return <p className="waitingState">Loading...</p>;
-	if (isError)
-		return (
-			<div>
-				<p className="waitingState">Something went wrong.</p>
-				<BaseBtn
-					className="homepageBtn"
-					icon={<HomeIcon size="32px" />}
-					title="Homepage"
-					onClick={() => setSearchQuery(null)}
-				/>
-			</div>
-		);
+	const navigate = useNavigate();
 
 	return (
-		<div>
+		<div className="searchPage">
+			<h1>Welcome to Watchtime!</h1>
 			<form
-				onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+				onSubmit={(e: React.SubmitEvent<HTMLFormElement>) => {
 					e.preventDefault();
-					setSearchQuery(inputValue);
-				}}>
-				<TextInput
-					placeholder="Write search terms here"
-					onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-						setInputValue(e.target.value)
+					if (inputValue.trim()) {
+						navigate(`/search/${encodeURIComponent(inputValue)}`);
 					}
-				/>
-				<BaseBtn text="Click Me" type="submit" />
+				}}>
+				<div className="searchBar">
+					<TextInput
+						className="searchInput"
+						placeholder="Write search terms here"
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+							setInputValue(e.target.value)
+						}
+					/>
+					<BaseBtn
+						className="searchBtn"
+						text="Click Me"
+						type="submit"
+					/>
+				</div>
 			</form>
-			<div className="movieContent">
-				{movie?.titles?.map((title) => {
-					const imageUrl =
-						title.primaryImage?.url ??
-						"https://clasebcn.com/wp-content/uploads/2020/04/harold-thumb.jpg";
-					const rating = title.rating?.aggregateRating ?? "No rating";
-					return (
-						<Link to={`/${title.type}/${title.id}`} key={title.id}>
-							<div className="movieCard">
-								<h2>{title.primaryTitle}</h2>
-								<img
-									src={imageUrl}
-									style={{ height: "150px", width: "99px" }}
-									referrerPolicy="no-referrer"
-								/>
-								<p>Type: {title.type}</p>
-								<p>Year: {title.startYear}</p>
-								<p>Rating: {rating}/10</p>
-							</div>
-						</Link>
-					);
-				})}
-			</div>
 		</div>
 	);
 }
