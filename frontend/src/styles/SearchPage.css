@@ -1,0 +1,27 @@
+.searchPage {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	justify-content: center;
+	font-family: sans-serif;
+	border: 1px solid white;
+	height: 100vh;
+}
+
+.searchInput {
+	padding: 1rem;
+	font-size: 1rem;
+}
+
+.searchBtn {
+	padding: 1rem;
+	font-size: 1rem;
+}
+
+.searchBar {
+	display: flex;
+	flex-direction: column;
+	width: 90vw;
+	gap: 1rem;
+}
