@@ -1,0 +1,33 @@
+.starsLayout {
+	width: 80vw;
+	background-color: var(--card-colour);
+	text-align: center;
+	margin: 0 auto;
+	margin-block-start: 1rem;
+	border-radius: 5px;
+}
+
+.starsLayout ul {
+	list-style: none;
+	padding-inline-start: 0;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1rem;
+	padding: 1rem;
+}
+
+.starIMG {
+	height: 30vh;
+	aspect-ratio: 9 / 16;
+}
+
+.starsTitle {
+	font-size: 2rem;
+	margin-block: 1rem 0;
+	padding-block: 1rem 0;
+}
+
+.starName {
+	padding: 0;
+	margin: 0;
+}

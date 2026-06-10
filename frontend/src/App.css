@@ -1,5 +1,6 @@
 * {
 	box-sizing: border-box;
+	font-family: sans-serif;
 }
 
 :root {
@@ -27,85 +28,6 @@ button {
 	width: fit-content;
 	margin: 40px auto; /* ← auto centrerar horisontellt, 40px ger lite luft uppe */
 	padding: 20px;
-}
-
-.informationLayout {
-	display: flex;
-	flex-direction: row;
-	align-items: flex-start;
-	gap: 20px;
-	background-color: var(--card-colour);
-	color: black;
-	padding: 20px;
-	border-radius: 10px;
-}
-.serieDetails img {
-	height: 400px;
-	object-fit: cover;
-	padding: 0;
-	border-radius: 5px;
-	box-shadow: 5px 5px 5px black;
-}
-
-.serieInformation {
-	text-align: left;
-	width: 300px;
-}
-
-.releaseYears {
-	display: flex;
-	flex-direction: column;
-
-	padding-left: 0;
-	margin-left: 0;
-	text-align: left;
-	list-style: none;
-}
-
-.firstRelease,
-.latestRelease {
-	margin: 0;
-	padding: 0;
-	gap: 0;
-}
-
-.genreList {
-	padding-left: 0;
-	margin-left: 0;
-	text-align: left;
-	list-style: none;
-}
-
-.plot {
-	width: 100%;
-	text-align: justify;
-	max-width: 400px;
-}
-
-.starsLayout {
-	background-color: var(--card-colour);
-	color: black;
-	padding: 20px;
-	border-radius: 10px;
-	text-align: center;
-	margin: 10px;
-}
-
-.starsList {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	padding: 0;
-	margin: 0;
-	gap: 0;
-	width: 50%;
-}
-
-.starsList img {
-	width: 100px;
-	height: 30%;
-	padding: 0;
-	margin: 10px;
 }
 
 .seasonsLayout {

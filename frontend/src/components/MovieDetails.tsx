@@ -1,3 +1,6 @@
+import "../styles/MovieDetails.css";
+import "../styles/WaitingState.css";
+import "../styles/Stars.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { searchTitleID } from "../utils/calls";
@@ -54,45 +57,50 @@ function MovieDetails() {
 
 	return (
 		<div>
-			<div className="serieDetails">
+			<div className="movieDetails">
 				<div className="informationLayout">
-					<img src={imageUrl} id="showIMG" />
-					<div className="serieInformation">
-						<h2>{selectedTitle.primaryTitle}</h2>
-						<div className="releaseYears">
-							<p className="firstRelease">
-								Released: {selectedTitle.startYear}
+					<h2 className="movieTitle">{selectedTitle.primaryTitle}</h2>
+					<div className="movieInformation">
+						<img src={imageUrl} className="movieIMG" />
+						<div>
+							<div className="releaseYears">
+								<p className="firstRelease">
+									Released: {selectedTitle.startYear}
+								</p>
+							</div>
+							<div className="genreList">
+								<span>Genres:</span>
+								<ul>
+									{selectedTitle.genres.map(
+										(genre, index) => (
+											<li key={index}>{genre}</li>
+										),
+									)}
+								</ul>
+							</div>
+							<p>Type: {selectedTitle.type}</p>
+							<p>Rating: {rating}</p>
+							<p className="plot">Plot: {selectedTitle.plot}</p>
+							<p>
+								Runtime: {selectedTitle.runtimeSeconds / 60}{" "}
+								mins.
 							</p>
 						</div>
-						<ul className="genreList">
-							Genres:{" "}
-							{selectedTitle.genres.map((genre, index) => (
-								<li key={index}>{genre}</li>
-							))}
-						</ul>
-						<p>Type: {selectedTitle.type}</p>
-						<p>Rating: {rating}</p>
-						<p className="plot">Plot: {selectedTitle.plot}</p>
-						<p>
-							Runtime: {selectedTitle.runtimeSeconds / 60} mins.
-						</p>
 					</div>
 				</div>
-				<div className="starsLayout">
-					<h3>Stars</h3>
-					<ul>
-						{(selectedTitle.stars ?? []).map((s) => (
-							<li key={s.id} className="starsList">
-								<img
-									src={s.primaryImage.url}
-									className="starIMG"
-								/>
-								<p className="starName">{s.displayName}</p>
-							</li>
-						))}
-					</ul>
-				</div>
 			</div>
+			<div className="starsLayout">
+				<h2 className="starsTitle">Starring</h2>
+				<ul>
+					{(selectedTitle.stars ?? []).map((s) => (
+						<li key={s.id} className="starsList">
+							<img src={s.primaryImage.url} className="starIMG" />
+							<p className="starName">{s.displayName}</p>
+						</li>
+					))}
+				</ul>
+			</div>
+
 			<BaseBtn
 				className="homepageBtn"
 				icon={<HomeIcon size="32px" />}

@@ -1,11 +1,3 @@
-.waitingState {
-	display: flex;
-	font-size: 64px;
-	align-items: center;
-	justify-content: center;
-	min-height: 100vh;
-}
-
 .movieContent {
 	display: flex;
 	flex-wrap: wrap;
