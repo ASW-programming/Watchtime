@@ -1,3 +1,6 @@
+import "../styles/TitleDetails.css";
+import "../styles/WaitingState.css";
+import "../styles/Stars.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -6,7 +9,7 @@ import {
 	searchSeasonCount,
 } from "../utils/calls";
 import { useState } from "react";
-import { HomeIcon } from "../assets/Icons";
+import { CancelIcon } from "../assets/Icons";
 import BaseBtn from "./BaseBtn";
 
 interface Star {
@@ -135,67 +138,86 @@ function SerieDetails() {
 
 	return (
 		<div>
-			<div className="serieDetails">
-				<div className="informationLayout">
-					<img src={imageUrl} id="showIMG" />
-					<div className="serieInformation">
-						<h2>{selectedTitle.primaryTitle}</h2>
+			<div className="titleCard">
+				<div
+					className="contentLayout"
+					style={{
+						backgroundImage: `url(${imageUrl})`,
+						backgroundSize: "cover",
+						backgroundPosition: "center",
+					}}>
+					<div className="imgOverlay" />
+					<h2 className="titleHeading">
+						{selectedTitle.primaryTitle}
+					</h2>
+					<div className="detailsLayout">
+						<img src={imageUrl} className="posterIMG" />
+						<p className="plot">
+							<span className="boldText">Plot:</span>{" "}
+							{selectedTitle.plot}
+						</p>
 						<div className="releaseYears">
 							<p className="firstRelease">
-								First released: {selectedTitle.startYear}
+								<span className="boldText">
+									First released:
+								</span>{" "}
+								{selectedTitle.startYear}
 							</p>
 							<p className="latestRelease">
-								Latest release: {selectedTitle.endYear}
+								<span className="boldText">
+									Latest release:
+								</span>{" "}
+								{selectedTitle.endYear}
 							</p>
 						</div>
-						<ul className="genreList">
-							Genres:{" "}
-							{selectedTitle.genres.map((g, index) => (
-								<li key={index}>{g}</li>
-							))}
-						</ul>
-						<p>Type: {selectedTitle.type}</p>
-						<p>Rating: {rating}</p>
-						<p className="plot">Plot: {selectedTitle.plot}</p>
-						<p>
-							Runtime: {selectedTitle.runtimeSeconds / 60} mins.
-						</p>
-					</div>
-				</div>
-				<div className="seasonsLayout">
-					{Object.entries(episodesBySeason).map(([season, eps]) => (
-						<div key={season} className="specificSeason">
-							<h3>Säsong {season}</h3>
+						<div className="genreList">
+							<span className="boldText">Genres:</span>
 							<ul>
-								{eps.map((ep) => (
-									<li key={ep.id} className="episodeList">
-										{ep.episodeNumber}. {ep.title}
-									</li>
+								{selectedTitle.genres.map((g, index) => (
+									<li key={index}>{g}</li>
 								))}
 							</ul>
 						</div>
+						<p>
+							<span className="boldText">Rating:</span> {rating}
+						</p>
+						<p className="runtime">
+							<span className="boldText">Runtime:</span>{" "}
+							{selectedTitle.runtimeSeconds / 60} mins.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div className="seasonsLayout">
+				{Object.entries(episodesBySeason).map(([season, eps]) => (
+					<div key={season} className="specificSeason">
+						<h3>Säsong {season}</h3>
+						<ul>
+							{eps.map((ep) => (
+								<li key={ep.id} className="episodeList">
+									{ep.episodeNumber}. {ep.title}
+								</li>
+							))}
+						</ul>
+					</div>
+				))}
+			</div>
+			<div className="starsLayout">
+				<h2 className="starsTitle">Starring</h2>
+				<ul>
+					{selectedTitle.stars.map((s) => (
+						<li key={s.id} className="starsList">
+							<img src={s.primaryImage.url} className="starIMG" />
+							<p className="starName">{s.displayName}</p>
+						</li>
 					))}
-				</div>
-				<div className="starsLayout">
-					<h3>Stars</h3>
-					<ul>
-						{selectedTitle.stars.map((s) => (
-							<li key={s.id} className="starsList">
-								<img
-									src={s.primaryImage.url}
-									className="starIMG"
-								/>
-								<p className="starName">{s.displayName}</p>
-							</li>
-						))}
-					</ul>
-				</div>
+				</ul>
 			</div>
 			<BaseBtn
 				className="homepageBtn"
-				icon={<HomeIcon size="32px" />}
+				icon={<CancelIcon />}
 				title="Homepage"
-				onClick={() => navigate("/")}
+				onClick={() => navigate(-1)}
 			/>
 		</div>
 	);

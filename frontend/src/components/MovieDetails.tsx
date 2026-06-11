@@ -1,11 +1,11 @@
-import "../styles/MovieDetails.css";
+import "../styles/TitleDetails.css";
 import "../styles/WaitingState.css";
 import "../styles/Stars.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { searchTitleID } from "../utils/calls";
 import BaseBtn from "./BaseBtn";
-import { HomeIcon } from "../assets/Icons.tsx";
+import { CancelIcon } from "../assets/Icons.tsx";
 
 // Typer för API-datan
 interface Star {
@@ -57,35 +57,45 @@ function MovieDetails() {
 
 	return (
 		<div>
-			<div className="movieDetails">
-				<div className="informationLayout">
-					<h2 className="movieTitle">{selectedTitle.primaryTitle}</h2>
-					<div className="movieInformation">
-						<img src={imageUrl} className="movieIMG" />
-						<div>
-							<div className="releaseYears">
-								<p className="firstRelease">
-									Released: {selectedTitle.startYear}
-								</p>
-							</div>
-							<div className="genreList">
-								<span>Genres:</span>
-								<ul>
-									{selectedTitle.genres.map(
-										(genre, index) => (
-											<li key={index}>{genre}</li>
-										),
-									)}
-								</ul>
-							</div>
-							<p>Type: {selectedTitle.type}</p>
-							<p>Rating: {rating}</p>
-							<p className="plot">Plot: {selectedTitle.plot}</p>
-							<p>
-								Runtime: {selectedTitle.runtimeSeconds / 60}{" "}
-								mins.
+			<div className="titleCard">
+				<div
+					className="contentLayout"
+					style={{
+						backgroundImage: `url(${imageUrl})`,
+						backgroundSize: "cover",
+						backgroundPosition: "center",
+					}}>
+					<div className="imgOverlay" />
+					<h2 className="titleHeading">
+						{selectedTitle.primaryTitle}
+					</h2>
+					<div className="detailsLayout">
+						<img src={imageUrl} className="posterIMG" />
+						<p className="plot">
+							<span className="boldText">Plot:</span>{" "}
+							{selectedTitle.plot}
+						</p>
+						<div className="releaseYears">
+							<p className="firstRelease">
+								<span className="boldText">Released:</span>{" "}
+								{selectedTitle.startYear}
 							</p>
 						</div>
+						<div className="genreList">
+							<span className="boldText">Genres:</span>
+							<ul>
+								{selectedTitle.genres.map((genre, index) => (
+									<li key={index}>{genre}</li>
+								))}
+							</ul>
+						</div>
+						<p>
+							<span className="boldText">Rating:</span> {rating}
+						</p>
+						<p className="runtime">
+							<span className="boldText">Runtime:</span>{" "}
+							{selectedTitle.runtimeSeconds / 60} mins.
+						</p>
 					</div>
 				</div>
 			</div>
@@ -103,9 +113,9 @@ function MovieDetails() {
 
 			<BaseBtn
 				className="homepageBtn"
-				icon={<HomeIcon size="32px" />}
+				icon={<CancelIcon />}
 				title="Homepage"
-				onClick={() => navigate("/")}
+				onClick={() => navigate(-1)}
 			/>
 		</div>
 	);
