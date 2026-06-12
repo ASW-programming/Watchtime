@@ -1,6 +1,7 @@
 import "../styles/TitleDetails.css";
 import "../styles/WaitingState.css";
 import "../styles/Stars.css";
+import "../styles/SerieDetails.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -191,8 +192,8 @@ function SerieDetails() {
 			<div className="seasonsLayout">
 				{Object.entries(episodesBySeason).map(([season, eps]) => (
 					<div key={season} className="specificSeason">
-						<h3>Säsong {season}</h3>
-						<ul>
+						<h3 className="seriesSeason">Säsong {season}</h3>
+						<ul className="episodeUList">
 							{eps.map((ep) => (
 								<li key={ep.id} className="episodeList">
 									{ep.episodeNumber}. {ep.title}
