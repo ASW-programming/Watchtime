@@ -1,0 +1,39 @@
+.seasonsLayout {
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	padding-inline: 1rem;
+	margin: 0 auto;
+	gap: 0.5rem;
+}
+
+.specificSeason {
+	display: flex;
+	flex-direction: column;
+	width: 80vw;
+	background-color: var(--card-colour);
+	margin: 0 auto;
+	padding: 1rem;
+	gap: 1rem;
+}
+
+.episodeUList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.seriesSeason {
+	padding: 0;
+	margin: 0;
+}
+
+.titleSeen {
+	display: flex;
+	justify-content: space-between;
+}
+
+.seasonTitle {
+	display: flex;
+	justify-content: space-between;
+}

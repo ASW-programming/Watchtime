@@ -60,23 +60,39 @@ function SearchResults() {
 					"https://clasebcn.com/wp-content/uploads/2020/04/harold-thumb.jpg";
 				const rating = title.rating?.aggregateRating ?? "No rating";
 				return (
-					<Link to={`/${title.type}/${title.id}`} key={title.id}>
-						<div className="movieCard">
-							<h2>{title.primaryTitle}</h2>
-							<img
-								className="thumbnail"
-								src={imageUrl}
-								referrerPolicy="no-referrer"
-							/>
-							<ul className="infoList">
-								<p>Type: {title.type}</p>
-								<p>Year: {title.startYear}</p>
-								<p>Rating: {rating}/10</p>
-							</ul>
-						</div>
-					</Link>
+					<div
+						key={title.id}
+						className="movieCardWrapper"
+						style={{
+							backgroundImage: `url(${imageUrl})`,
+							backgroundSize: "cover",
+							backgroundPosition: "center",
+						}}>
+						<Link to={`/${title.type}/${title.id}`}>
+							<div className="imgOverlay" />
+							<div className="movieCard">
+								<h2>{title.primaryTitle}</h2>
+								<img
+									className="thumbnail"
+									src={imageUrl}
+									referrerPolicy="no-referrer"
+								/>
+								<ul className="infoList">
+									<p>Type: {title.type}</p>
+									<p>Year: {title.startYear}</p>
+									<p>Rating: {rating}/10</p>
+								</ul>
+							</div>
+						</Link>
+					</div>
 				);
 			})}
+			<BaseBtn
+				className="homepageBtn"
+				icon={<HomeIcon size="32px" />}
+				title="Homepage"
+				onClick={() => navigate("/")}
+			/>
 		</div>
 	);
 }

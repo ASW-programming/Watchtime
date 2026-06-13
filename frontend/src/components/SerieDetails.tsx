@@ -1,3 +1,7 @@
+import "../styles/TitleDetails.css";
+import "../styles/WaitingState.css";
+import "../styles/Stars.css";
+import "../styles/SerieDetails.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -6,8 +10,9 @@ import {
 	searchSeasonCount,
 } from "../utils/calls";
 import { useState } from "react";
-import { HomeIcon } from "../assets/Icons";
+import { CancelIcon } from "../assets/Icons";
 import BaseBtn from "./BaseBtn";
+import Checkbox from "./Checkbox";
 
 interface Star {
 	id: string;
@@ -52,6 +57,14 @@ function SerieDetails() {
 	const [progress, setProgress] = useState({ current: 0, total: 0 });
 	const navigate = useNavigate();
 
+	// Object that keeps ID as a string and seen as bool
+	const [seen, setSeen] = useState<
+		Record<string, { seen: boolean; title: string }>
+	>(() => {
+		const saved = localStorage.getItem("seen");
+		return saved ? JSON.parse(saved) : {};
+	});
+
 	const {
 		data: selectedTitle,
 		isLoading,
@@ -90,6 +103,32 @@ function SerieDetails() {
 		enabled: selectedTitle?.type === "tvSeries" && !!totalSeasons,
 		staleTime: Infinity,
 	});
+
+	const handleChange = (id: string, checked: boolean, title: string) => {
+		setSeen((prev) => {
+			const updated = { ...prev };
+			if (checked) {
+				updated[id] = { seen: true, title };
+			} else {
+				delete updated[id];
+			}
+			localStorage.setItem("seen", JSON.stringify(updated));
+			return updated;
+		});
+	};
+
+	const markSeasonAsSeen = (eps: Episode[]) => {
+		const allSeen = eps.every((ep) => seen[ep.id]?.seen);
+
+		setSeen((prev) => {
+			const updated = { ...prev };
+			eps.forEach((ep) => {
+				updated[ep.id] = { seen: !allSeen, title: ep.title };
+			});
+			localStorage.setItem("seen", JSON.stringify(updated));
+			return updated;
+		});
+	};
 
 	if (isLoading || isLoadingSeasons)
 		return <p className="waitingState">Loading...</p>;
@@ -135,67 +174,114 @@ function SerieDetails() {
 
 	return (
 		<div>
-			<div className="serieDetails">
-				<div className="informationLayout">
-					<img src={imageUrl} id="showIMG" />
-					<div className="serieInformation">
-						<h2>{selectedTitle.primaryTitle}</h2>
+			<div className="titleCard">
+				<div
+					className="contentLayout"
+					style={{
+						backgroundImage: `url(${imageUrl})`,
+						backgroundSize: "cover",
+						backgroundPosition: "center",
+					}}>
+					<div className="imgOverlay" />
+					<h2 className="titleHeading">
+						{selectedTitle.primaryTitle}
+					</h2>
+					<div className="detailsLayout">
+						<img src={imageUrl} className="posterIMG" />
+						<p className="plot">
+							<span className="boldText">Plot:</span>{" "}
+							{selectedTitle.plot}
+						</p>
 						<div className="releaseYears">
 							<p className="firstRelease">
-								First released: {selectedTitle.startYear}
+								<span className="boldText">
+									First released:
+								</span>{" "}
+								{selectedTitle.startYear}
 							</p>
 							<p className="latestRelease">
-								Latest release: {selectedTitle.endYear}
+								<span className="boldText">
+									Latest release:
+								</span>{" "}
+								{selectedTitle.endYear}
 							</p>
 						</div>
-						<ul className="genreList">
-							Genres:{" "}
-							{selectedTitle.genres.map((g, index) => (
-								<li key={index}>{g}</li>
-							))}
-						</ul>
-						<p>Type: {selectedTitle.type}</p>
-						<p>Rating: {rating}</p>
-						<p className="plot">Plot: {selectedTitle.plot}</p>
+						<div className="genreList">
+							<span className="boldText">Genres:</span>
+							<ul>
+								{selectedTitle.genres.map((g, index) => (
+									<li key={index}>{g}</li>
+								))}
+							</ul>
+						</div>
 						<p>
-							Runtime: {selectedTitle.runtimeSeconds / 60} mins.
+							<span className="boldText">Rating:</span> {rating}
+						</p>
+						<p className="runtime">
+							<span className="boldText">Runtime:</span>{" "}
+							{selectedTitle.runtimeSeconds / 60} mins.
 						</p>
 					</div>
 				</div>
-				<div className="seasonsLayout">
-					{Object.entries(episodesBySeason).map(([season, eps]) => (
+			</div>
+			<div className="seasonsLayout">
+				{Object.entries(episodesBySeason).map(([season, eps]) => {
+					const allSeen = eps.every((ep) => seen[ep.id]?.seen);
+					return (
 						<div key={season} className="specificSeason">
-							<h3>Säsong {season}</h3>
-							<ul>
+							<div className="seasonTitle">
+								<h3 className="seriesSeason">
+									Säsong {season}
+								</h3>
+								<div className="selectAll">
+									<label>Select all</label>
+									<Checkbox
+										checked={allSeen}
+										onChange={() => markSeasonAsSeen(eps)}
+									/>
+								</div>
+							</div>
+							<ul className="episodeUList">
 								{eps.map((ep) => (
 									<li key={ep.id} className="episodeList">
-										{ep.episodeNumber}. {ep.title}
+										<div className="titleSeen">
+											{ep.episodeNumber}. {ep.title}
+											<Checkbox
+												checked={
+													seen[ep.id]?.seen ?? false
+												}
+												onChange={(e) =>
+													handleChange(
+														ep.id,
+														e.target.checked,
+														ep.title,
+													)
+												}
+											/>
+										</div>
 									</li>
 								))}
 							</ul>
 						</div>
+					);
+				})}
+			</div>
+			<div className="starsLayout">
+				<h2 className="starsTitle">Starring</h2>
+				<ul>
+					{selectedTitle.stars.map((s) => (
+						<li key={s.id} className="starsList">
+							<img src={s.primaryImage.url} className="starIMG" />
+							<p className="starName">{s.displayName}</p>
+						</li>
 					))}
-				</div>
-				<div className="starsLayout">
-					<h3>Stars</h3>
-					<ul>
-						{selectedTitle.stars.map((s) => (
-							<li key={s.id} className="starsList">
-								<img
-									src={s.primaryImage.url}
-									className="starIMG"
-								/>
-								<p className="starName">{s.displayName}</p>
-							</li>
-						))}
-					</ul>
-				</div>
+				</ul>
 			</div>
 			<BaseBtn
 				className="homepageBtn"
-				icon={<HomeIcon size="32px" />}
+				icon={<CancelIcon />}
 				title="Homepage"
-				onClick={() => navigate("/")}
+				onClick={() => navigate(-1)}
 			/>
 		</div>
 	);

@@ -1,5 +1,6 @@
 * {
 	box-sizing: border-box;
+	font-family: sans-serif;
 }
 
 :root {
@@ -18,123 +19,6 @@ li {
 
 button {
 	border: none;
-}
-
-.serieDetails {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	width: fit-content;
-	margin: 40px auto; /* ← auto centrerar horisontellt, 40px ger lite luft uppe */
-	padding: 20px;
-}
-
-.informationLayout {
-	display: flex;
-	flex-direction: row;
-	align-items: flex-start;
-	gap: 20px;
-	background-color: var(--card-colour);
-	color: black;
-	padding: 20px;
-	border-radius: 10px;
-}
-.serieDetails img {
-	height: 400px;
-	object-fit: cover;
-	padding: 0;
-	border-radius: 5px;
-	box-shadow: 5px 5px 5px black;
-}
-
-.serieInformation {
-	text-align: left;
-	width: 300px;
-}
-
-.releaseYears {
-	display: flex;
-	flex-direction: column;
-
-	padding-left: 0;
-	margin-left: 0;
-	text-align: left;
-	list-style: none;
-}
-
-.firstRelease,
-.latestRelease {
-	margin: 0;
-	padding: 0;
-	gap: 0;
-}
-
-.genreList {
-	padding-left: 0;
-	margin-left: 0;
-	text-align: left;
-	list-style: none;
-}
-
-.plot {
-	width: 100%;
-	text-align: justify;
-	max-width: 400px;
-}
-
-.starsLayout {
-	background-color: var(--card-colour);
-	color: black;
-	padding: 20px;
-	border-radius: 10px;
-	text-align: center;
-	margin: 10px;
-}
-
-.starsList {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	padding: 0;
-	margin: 0;
-	gap: 0;
-	width: 50%;
-}
-
-.starsList img {
-	width: 100px;
-	height: 30%;
-	padding: 0;
-	margin: 10px;
-}
-
-.seasonsLayout {
-	display: flex;
-	flex-wrap: wrap;
-	width: 80%;
-	text-align: left;
-}
-
-.seasonsLayout h3 {
-	text-align: left;
-}
-
-.seasonsLayout ul {
-	padding-left: 0;
-	list-style-position: inside;
-}
-
-.episodeList {
-	padding: 0;
-	margin: 0;
-	text-align: start;
-}
-
-.specificSeason {
-	margin: 10px;
-	padding: 10px;
-	width: 250px;
-	background-color: var(--card-colour);
 }
 
 .progressContainer {
@@ -163,8 +47,20 @@ button {
 /* Buttons */
 .homepageBtn {
 	position: fixed;
-	top: 10px;
-	right: 10px;
+	inset-block-start: 10px;
+	inset-inline-end: 10px;
 	border-radius: 50%;
 	padding: 10px;
+	z-index: 100;
+}
+
+.boldText {
+	font-weight: bold;
+}
+
+.imgOverlay {
+	backdrop-filter: blur(15px);
+	background-color: rgba(0, 0, 0, 0.5);
+	position: absolute;
+	inset: 0;
 }

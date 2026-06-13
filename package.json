@@ -1,7 +1,7 @@
 {
 	"name": "watchtime",
 	"scripts": {
-		"dev": "concurrently \"cd backend && nodemon server.js\" \"cd frontend && npm run dev\"",
+		"dev": "concurrently \"cd backend && nodemon server.js\" \"cd frontend && npm run dev -- --host\"",
 		"install:all": "cd backend && npm install && cd ../frontend && npm install"
 	},
 	"devDependencies": {
