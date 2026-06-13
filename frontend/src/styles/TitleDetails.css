@@ -60,3 +60,7 @@
 .runtime {
 	padding-block-end: 0.75rem;
 }
+
+.selectAll {
+	display: flex;
+}

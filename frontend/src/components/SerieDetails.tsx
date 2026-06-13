@@ -58,7 +58,12 @@ function SerieDetails() {
 	const navigate = useNavigate();
 
 	// Object that keeps ID as a string and seen as bool
-	const [seen, setSeen] = useState<Record<string, boolean>>({});
+	const [seen, setSeen] = useState<
+		Record<string, { seen: boolean; title: string }>
+	>(() => {
+		const saved = localStorage.getItem("seen");
+		return saved ? JSON.parse(saved) : {};
+	});
 
 	const {
 		data: selectedTitle,
@@ -99,8 +104,30 @@ function SerieDetails() {
 		staleTime: Infinity,
 	});
 
-	const handleChange = (id: string, checked: boolean) => {
-		setSeen((prev) => ({ ...prev, [id]: checked }));
+	const handleChange = (id: string, checked: boolean, title: string) => {
+		setSeen((prev) => {
+			const updated = { ...prev };
+			if (checked) {
+				updated[id] = { seen: true, title };
+			} else {
+				delete updated[id];
+			}
+			localStorage.setItem("seen", JSON.stringify(updated));
+			return updated;
+		});
+	};
+
+	const markSeasonAsSeen = (eps: Episode[]) => {
+		const allSeen = eps.every((ep) => seen[ep.id]?.seen);
+
+		setSeen((prev) => {
+			const updated = { ...prev };
+			eps.forEach((ep) => {
+				updated[ep.id] = { seen: !allSeen, title: ep.title };
+			});
+			localStorage.setItem("seen", JSON.stringify(updated));
+			return updated;
+		});
 	};
 
 	if (isLoading || isLoadingSeasons)
@@ -198,29 +225,46 @@ function SerieDetails() {
 				</div>
 			</div>
 			<div className="seasonsLayout">
-				{Object.entries(episodesBySeason).map(([season, eps]) => (
-					<div key={season} className="specificSeason">
-						<h3 className="seriesSeason">Säsong {season}</h3>
-						<ul className="episodeUList">
-							{eps.map((ep) => (
-								<li key={ep.id} className="episodeList">
-									<div className="titleSeen">
-										{ep.episodeNumber}. {ep.title}
-										<Checkbox
-											checked={seen[ep.id] ?? false}
-											onChange={(e) =>
-												handleChange(
-													ep.id,
-													e.target.checked,
-												)
-											}
-										/>
-									</div>
-								</li>
-							))}
-						</ul>
-					</div>
-				))}
+				{Object.entries(episodesBySeason).map(([season, eps]) => {
+					const allSeen = eps.every((ep) => seen[ep.id]?.seen);
+					return (
+						<div key={season} className="specificSeason">
+							<div className="seasonTitle">
+								<h3 className="seriesSeason">
+									Säsong {season}
+								</h3>
+								<div className="selectAll">
+									<label>Select all</label>
+									<Checkbox
+										checked={allSeen}
+										onChange={() => markSeasonAsSeen(eps)}
+									/>
+								</div>
+							</div>
+							<ul className="episodeUList">
+								{eps.map((ep) => (
+									<li key={ep.id} className="episodeList">
+										<div className="titleSeen">
+											{ep.episodeNumber}. {ep.title}
+											<Checkbox
+												checked={
+													seen[ep.id]?.seen ?? false
+												}
+												onChange={(e) =>
+													handleChange(
+														ep.id,
+														e.target.checked,
+														ep.title,
+													)
+												}
+											/>
+										</div>
+									</li>
+								))}
+							</ul>
+						</div>
+					);
+				})}
 			</div>
 			<div className="starsLayout">
 				<h2 className="starsTitle">Starring</h2>

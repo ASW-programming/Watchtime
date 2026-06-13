@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { searchTitleID } from "../utils/calls";
 import BaseBtn from "./BaseBtn";
 import { CancelIcon } from "../assets/Icons.tsx";
+import Checkbox from "./Checkbox.tsx";
+import { useState } from "react";
 
 // Typer för API-datan
 interface Star {
@@ -17,6 +19,7 @@ interface Star {
 }
 
 interface Title {
+	id: string;
 	primaryTitle: string;
 	startYear: number;
 	type: string;
@@ -36,6 +39,14 @@ function MovieDetails() {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 
+	// Object that keeps ID as a string and seen as bool
+	const [seen, setSeen] = useState<
+		Record<string, { seen: boolean; title: string }>
+	>(() => {
+		const saved = localStorage.getItem("seen");
+		return saved ? JSON.parse(saved) : {};
+	});
+
 	const {
 		data: selectedTitle,
 		isLoading,
@@ -44,6 +55,19 @@ function MovieDetails() {
 		queryKey: ["specific", id],
 		queryFn: () => searchTitleID(id),
 	});
+
+	const handleChange = (id: string, checked: boolean, title: string) => {
+		setSeen((prev) => {
+			const updated = { ...prev };
+			if (checked) {
+				updated[id] = { seen: true, title };
+			} else {
+				delete updated[id];
+			}
+			localStorage.setItem("seen", JSON.stringify(updated));
+			return updated;
+		});
+	};
 
 	if (isLoading) return <p className="waitingState">Loading...</p>;
 	if (isError) return <p className="waitingState">Something went wrong.</p>;
@@ -96,6 +120,19 @@ function MovieDetails() {
 							<span className="boldText">Runtime:</span>{" "}
 							{selectedTitle.runtimeSeconds / 60} mins.
 						</p>
+						<div className="selectAll" id="watchedMovie">
+							<label>Watched</label>
+							<Checkbox
+								checked={seen[selectedTitle.id]?.seen ?? false}
+								onChange={(e) =>
+									handleChange(
+										selectedTitle.id,
+										e.target.checked,
+										selectedTitle.primaryTitle,
+									)
+								}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
