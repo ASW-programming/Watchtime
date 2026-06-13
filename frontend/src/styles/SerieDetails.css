@@ -27,3 +27,8 @@
 	padding: 0;
 	margin: 0;
 }
+
+.titleSeen {
+	display: flex;
+	justify-content: space-between;
+}

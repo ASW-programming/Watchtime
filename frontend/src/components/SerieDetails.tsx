@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { CancelIcon } from "../assets/Icons";
 import BaseBtn from "./BaseBtn";
+import Checkbox from "./Checkbox";
 
 interface Star {
 	id: string;
@@ -56,6 +57,9 @@ function SerieDetails() {
 	const [progress, setProgress] = useState({ current: 0, total: 0 });
 	const navigate = useNavigate();
 
+	// Object that keeps ID as a string and seen as bool
+	const [seen, setSeen] = useState<Record<string, boolean>>({});
+
 	const {
 		data: selectedTitle,
 		isLoading,
@@ -94,6 +98,10 @@ function SerieDetails() {
 		enabled: selectedTitle?.type === "tvSeries" && !!totalSeasons,
 		staleTime: Infinity,
 	});
+
+	const handleChange = (id: string, checked: boolean) => {
+		setSeen((prev) => ({ ...prev, [id]: checked }));
+	};
 
 	if (isLoading || isLoadingSeasons)
 		return <p className="waitingState">Loading...</p>;
@@ -196,7 +204,18 @@ function SerieDetails() {
 						<ul className="episodeUList">
 							{eps.map((ep) => (
 								<li key={ep.id} className="episodeList">
-									{ep.episodeNumber}. {ep.title}
+									<div className="titleSeen">
+										{ep.episodeNumber}. {ep.title}
+										<Checkbox
+											checked={seen[ep.id] ?? false}
+											onChange={(e) =>
+												handleChange(
+													ep.id,
+													e.target.checked,
+												)
+											}
+										/>
+									</div>
 								</li>
 							))}
 						</ul>
