@@ -4,42 +4,16 @@ import "../styles/Stars.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { searchTitleID } from "../utils/calls";
+import type { Title } from "../types";
 import BaseBtn from "./BaseBtn";
 import { CancelIcon } from "../assets/Icons.tsx";
 import Checkbox from "./Checkbox.tsx";
 import { useState } from "react";
 
-// Typer för API-datan
-interface Star {
-	id: string;
-	displayName: string;
-	primaryImage: {
-		url: string;
-	};
-}
-
-interface Title {
-	id: string;
-	primaryTitle: string;
-	startYear: number;
-	type: string;
-	plot: string;
-	runtimeSeconds: number;
-	genres: string[];
-	primaryImage?: {
-		url: string;
-	};
-	rating?: {
-		aggregateRating: number;
-	};
-	stars?: Star[];
-}
-
 function MovieDetails() {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 
-	// Object that keeps ID as a string and seen as bool
 	const [seen, setSeen] = useState<
 		Record<string, { seen: boolean; title: string }>
 	>(() => {
@@ -76,7 +50,6 @@ function MovieDetails() {
 	const imageUrl =
 		selectedTitle.primaryImage?.url ??
 		"https://clasebcn.com/wp-content/uploads/2020/04/harold-thumb.jpg";
-
 	const rating = selectedTitle.rating?.aggregateRating ?? "No rating";
 
 	return (
@@ -147,7 +120,6 @@ function MovieDetails() {
 					))}
 				</ul>
 			</div>
-
 			<BaseBtn
 				className="homepageBtn"
 				icon={<CancelIcon />}

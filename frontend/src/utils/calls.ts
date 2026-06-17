@@ -1,70 +1,82 @@
+import type { Title, SeasonsResponse, SearchResult } from "../types";
+
 const TITLE_URL = "https://api.imdbapi.dev";
 const limit = 10;
 
-export async function searchTitle(searchQuery) {
+export interface Episode {
+	id: string;
+	title: string;
+	season: number;
+	episodeNumber: number;
+	rating?: number;
+	[key: string]: unknown;
+}
+
+export interface EpisodesResponse {
+	episodes: Episode[];
+}
+
+export async function searchTitle(searchQuery: string): Promise<SearchResult> {
 	const response = await fetch(
 		`${TITLE_URL}/search/titles?query=${searchQuery}&limit=${limit}`,
 	);
-
 	if (!response.ok) {
 		throw new Error(`HTTP error: ${response.status}`);
 	}
-
-	return await response.json();
+	return response.json() as Promise<SearchResult>;
 }
 
-export async function searchTitleID(searchID) {
+export async function searchTitleID(
+	searchID: string | undefined,
+): Promise<Title> {
 	const response = await fetch(`${TITLE_URL}/titles/${searchID}`);
-
 	if (!response.ok) {
 		throw new Error(`HTTP error: ${response.status}`);
 	}
-
-	return await response.json();
+	return response.json() as Promise<Title>;
 }
 
-export async function searchSeasonCount(id) {
+export async function searchSeasonCount(
+	id: string | undefined,
+): Promise<SeasonsResponse> {
 	const response = await fetch(`${TITLE_URL}/titles/${id}/seasons`);
 	if (!response.ok) {
 		throw new Error(`HTTP error: ${response.status}`);
 	}
-	return await response.json();
+	return response.json() as Promise<SeasonsResponse>;
 }
 
-export async function searchEpisodeCount(id, seasons, onProgress) {
-	const allEpisodes = [];
+export async function searchEpisodeCount(
+	id: string | undefined,
+	seasons: SeasonsResponse["seasons"],
+	onProgress?: (current: number, total: number) => void,
+): Promise<EpisodesResponse> {
+	const allEpisodes: Episode[] = [];
 
-	// Update UI with which season its currently being fetched
 	for (let i = 0; i < seasons.length; i++) {
 		const s = seasons[i];
 		onProgress?.(i, seasons.length);
 
-		// Build correct URL with season and pagesize
 		const url = new URL(`${TITLE_URL}/titles/${id}/episodes`);
 		url.searchParams.set("pageSize", "50");
-		url.searchParams.set("season", s.season);
+		url.searchParams.set("season", String(s.season));
 
-		// Try three times before giving up
 		let retries = 3;
 		while (retries > 0) {
 			const res = await fetch(url);
-
-			// If rate is being limitied, wait one sec and try again
 			if (res.status === 429) {
-				await new Promise((resolve) => setTimeout(resolve, 1000));
+				await new Promise<void>((resolve) => setTimeout(resolve, 1000));
 				retries--;
 				continue;
 			}
 			if (!res.ok) throw new Error(`HTTP error ${res.status}`);
 
-			// Push episodes from a specific season into a list.
-			const data = await res.json();
+			const data: EpisodesResponse = await res.json();
 			allEpisodes.push(...data.episodes);
 			break;
 		}
 
-		// Wait before we go again.
-		await new Promise((resolve) => setTimeout(resolve, 300));
+		await new Promise<void>((resolve) => setTimeout(resolve, 300));
 	}
 
 	return { episodes: allEpisodes };

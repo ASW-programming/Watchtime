@@ -9,6 +9,7 @@ import {
 	searchEpisodeCount,
 	searchSeasonCount,
 } from "../utils/calls";
+import type { SeasonsResponse, Episode, EpisodesResponse } from "../types";
 import { useState } from "react";
 import { CancelIcon } from "../assets/Icons";
 import BaseBtn from "./BaseBtn";
@@ -33,21 +34,6 @@ interface Title {
 	primaryImage?: { url: string };
 	rating?: { aggregateRating: number };
 	stars: Star[];
-}
-
-interface Season {
-	seasons: number;
-}
-
-interface Episode {
-	id: string;
-	title: string;
-	season: number;
-	episodeNumber: number;
-}
-
-interface EpisodesResult {
-	episodes: Episode[];
 }
 
 type EpisodesBySeason = Record<number, Episode[]>;
@@ -79,7 +65,7 @@ function SerieDetails() {
 		data: totalSeasons,
 		isLoading: isLoadingSeasons,
 		isError: isErrorSeasons,
-	} = useQuery<Season>({
+	} = useQuery<SeasonsResponse>({
 		queryKey: ["seasons", id],
 		queryFn: () => searchSeasonCount(id),
 		enabled: selectedTitle?.type === "tvSeries",
@@ -90,7 +76,7 @@ function SerieDetails() {
 		data: episodes,
 		isLoading: isLoadingEpisodes,
 		isError: isErrorEpisodes,
-	} = useQuery<EpisodesResult>({
+	} = useQuery<EpisodesResponse>({
 		queryKey: ["episodes", id],
 		queryFn: () =>
 			searchEpisodeCount(
@@ -188,39 +174,42 @@ function SerieDetails() {
 					</h2>
 					<div className="detailsLayout">
 						<img src={imageUrl} className="posterIMG" />
-						<p className="plot">
-							<span className="boldText">Plot:</span>{" "}
-							{selectedTitle.plot}
-						</p>
-						<div className="releaseYears">
-							<p className="firstRelease">
-								<span className="boldText">
-									First released:
-								</span>{" "}
-								{selectedTitle.startYear}
+						<div className="description">
+							<p className="plot">
+								<span className="boldText">Plot:</span>{" "}
+								{selectedTitle.plot}
 							</p>
-							<p className="latestRelease">
-								<span className="boldText">
-									Latest release:
-								</span>{" "}
-								{selectedTitle.endYear}
+							<div className="releaseYears">
+								<p className="firstRelease">
+									<span className="boldText">
+										First released:
+									</span>{" "}
+									{selectedTitle.startYear}
+								</p>
+								<p className="latestRelease">
+									<span className="boldText">
+										Latest release:
+									</span>{" "}
+									{selectedTitle.endYear}
+								</p>
+							</div>
+							<div className="genreList">
+								<span className="boldText">Genres:</span>
+								<ul>
+									{selectedTitle.genres.map((g, index) => (
+										<li key={index}>{g}</li>
+									))}
+								</ul>
+							</div>
+							<p>
+								<span className="boldText">Rating:</span>{" "}
+								{rating}
+							</p>
+							<p className="runtime">
+								<span className="boldText">Runtime:</span>{" "}
+								{selectedTitle.runtimeSeconds / 60} mins.
 							</p>
 						</div>
-						<div className="genreList">
-							<span className="boldText">Genres:</span>
-							<ul>
-								{selectedTitle.genres.map((g, index) => (
-									<li key={index}>{g}</li>
-								))}
-							</ul>
-						</div>
-						<p>
-							<span className="boldText">Rating:</span> {rating}
-						</p>
-						<p className="runtime">
-							<span className="boldText">Runtime:</span>{" "}
-							{selectedTitle.runtimeSeconds / 60} mins.
-						</p>
 					</div>
 				</div>
 			</div>

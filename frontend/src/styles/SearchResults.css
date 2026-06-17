@@ -21,19 +21,19 @@
 }
 
 .movieCard {
-	background-color: transparent; /* ← ändra från var(--card-colour) */
+	background-color: transparent;
 	display: flex;
 	flex-direction: column;
-	width: 100%; /* ← ändra från 90vw, wrapper hanterar bredden nu */
+	width: 100%;
 	border-radius: 5%;
 	justify-content: center;
 	align-items: center;
 	text-align: center;
 	text-decoration: none;
-	color: white; /* ← ändra till white så den syns mot overlayen */
+	color: white;
 	font-size: 1.5rem;
 	font-family: sans-serif;
-	margin: 0; /* ← flytta margin till wrapper */
+	margin: 0;
 	position: relative;
 	z-index: 1;
 }
@@ -58,4 +58,22 @@
 	width: fit-content;
 	margin: 0 auto;
 	padding: 0 1rem;
+}
+
+/* Desktop */
+@media (min-width: 1168px) {
+	.movieContent {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+	}
+
+	.movieCardWrapper {
+		width: 20vw;
+		display: grid;
+	}
+
+	.movieCard h2 {
+		block-size: 5rem;
+		overflow: hidden;
+	}
 }

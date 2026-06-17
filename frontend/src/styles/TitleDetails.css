@@ -64,3 +64,27 @@
 .selectAll {
 	display: flex;
 }
+
+/* Desktop */
+@media (min-width: 1168px) {
+	.detailsLayout {
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		gap: 2rem;
+		padding-block: 1rem;
+	}
+	.posterIMG {
+		width: 20vw;
+		height: auto;
+	}
+	.description {
+		display: flex;
+		flex-direction: column;
+		width: 30vw;
+	}
+	.plot {
+		width: auto;
+		margin-inline: 0;
+	}
+}
