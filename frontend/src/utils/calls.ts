@@ -12,20 +12,25 @@ interface OmdbMovie {
 	Type: string;
 	Poster: string;
 	Plot?: string;
+}
+
+interface OmdbSearchResult {
+	Search: OmdbMovie[];
+	totalResults: string;
 	Response: "True" | "False";
 	Error?: string;
 }
 
-export async function getTitle(title: string): Promise<OmdbMovie> {
+export async function getTitles(titles: string): Promise<OmdbSearchResult> {
 	const response = await fetch(
-		`${BASE_URL}/?apikey=${API_KEY}&t=${encodeURIComponent(title)}`,
+		`${BASE_URL}/?apikey=${API_KEY}&s=${encodeURIComponent(titles)}`,
 	);
 
 	if (!response.ok) {
 		throw new Error("Kunde inte hämta data från OMDb");
 	}
 
-	const data: OmdbMovie = await response.json();
+	const data: OmdbSearchResult = await response.json();
 
 	if (data.Response === "False") {
 		throw new Error(data.Error || "Ingen film hittades");
