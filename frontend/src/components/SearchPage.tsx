@@ -3,6 +3,7 @@ import BaseBtn from "./BaseBtn";
 import TextInput from "./TextInput";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getTitle } from "../utils/calls";
 
 function SearchPage() {
 	const [inputValue, setInputValue] = useState<string>("");
