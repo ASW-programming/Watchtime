@@ -1,6 +1,7 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getTitles } from "../utils/calls.ts";
 import { useQuery } from "@tanstack/react-query";
+import BaseBtn from "./BaseBtn.tsx";
 
 interface OmdbMovie {
 	Title: string;
@@ -53,6 +54,9 @@ function SearchResults() {
 				{results?.Search.map((r) => (
 					<li key={r.imdbID}>
 						{r.Title} ({r.Year})
+						<Link to={`/${r.Type}/${r.imdbID}`}>
+							<BaseBtn text="Open" />
+						</Link>
 					</li>
 				))}
 			</ul>

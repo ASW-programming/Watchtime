@@ -27,7 +27,7 @@ export async function getTitles(titles: string): Promise<OmdbSearchResult> {
 	);
 
 	if (!response.ok) {
-		throw new Error("Kunde inte hämta data från OMDb");
+		throw new Error("Couldnt fetch from OMDB");
 	}
 
 	const data: OmdbSearchResult = await response.json();
@@ -35,6 +35,20 @@ export async function getTitles(titles: string): Promise<OmdbSearchResult> {
 	if (data.Response === "False") {
 		throw new Error(data.Error || "Ingen film hittades");
 	}
+
+	return data;
+}
+
+export async function selectedTitle(id: string) {
+	const response = await fetch(
+		`${BASE_URL}/?apikey=${API_KEY}&i=${encodeURIComponent(id)}`,
+	);
+
+	if (!response.ok) {
+		throw new Error("Title wasnt found");
+	}
+
+	const data = await response.json();
 
 	return data;
 }
