@@ -15,6 +15,12 @@ function SerieDetails() {
 		enabled: !!id,
 	});
 
+	const years = serie.Year.split("–");
+	const startYear = years[0];
+	const stopYear = years[1];
+
+	const genres = serie.Genre.split(", ");
+
 	if (isLoading) {
 		return (
 			<div>
@@ -34,10 +40,15 @@ function SerieDetails() {
 		<div>
 			<ul>
 				<h2>{serie.Title}</h2>
-				<p>{serie.Year}</p>
-				<p>{serie.Runtime}</p>
-				<p>{serie.Genre}</p>
+				<img src={serie.Poster}></img>
 				<p>{serie.Plot}</p>
+				<p>Started: {startYear}</p>
+				<p>Ended: {stopYear}</p>
+				<p>Runtime: {serie.Runtime}</p>
+				{genres.map((g: Array<string>, index: number) => (
+					<li key={index}>{g}</li>
+				))}
+
 				<p>{serie.Actors}</p>
 			</ul>
 		</div>
