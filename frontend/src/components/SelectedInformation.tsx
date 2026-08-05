@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { selectedTitle } from "../utils/calls";
+import "../styles/SelectedInformation.css";
 
 function SelectedInformation() {
 	const { id } = useParams<{ id: string }>();
@@ -37,19 +38,25 @@ function SelectedInformation() {
 	const genres = serie.Genre.split(", ");
 
 	return (
-		<div>
+		<div className="selectedContent">
 			<ul>
-				<h2>{serie.Title}</h2>
-				<img src={serie.Poster}></img>
-				<p>{serie.Plot}</p>
-				<p>Started: {startYear}</p>
-				<p>Ended: {stopYear}</p>
-				<p>Runtime: {serie.Runtime}</p>
-				{genres.map((g: Array<string>, index: number) => (
-					<li key={index}>{g}</li>
-				))}
+				<div>
+					<h1>{serie.Title}</h1>
+					<img src={serie.Poster}></img>
+					<p>Score: {serie.imdbRating}</p>
+					<p className="plot">{serie.Plot}</p>
+					<div className="airtime">
+						<p>Started: {startYear}</p>
+						<p>Ended: {stopYear}</p>
+					</div>
+					<p>Total Seasons: {serie.totalSeasons}</p>
+					<p>Runtime: {serie.Runtime}</p>
+					{genres.map((g: Array<string>, index: number) => (
+						<li key={index}>{g}</li>
+					))}
 
-				<p>{serie.Actors}</p>
+					<p>{serie.Actors}</p>
+				</div>
 			</ul>
 		</div>
 	);
