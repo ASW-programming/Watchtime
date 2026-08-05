@@ -1,71 +1,54 @@
-const TITLE_URL = "https://api.imdbapi.dev";
-const limit = 10;
+const API_KEY = import.meta.env.VITE_OMDB_API_KEY;
+const BASE_URL = import.meta.env.VITE_OMDB_BASE_URL;
 
-export async function searchTitle(searchQuery) {
+if (!API_KEY) {
+	throw new Error("VITE_OMDB_API_KEY saknas. Lägg till den i din .env-fil.");
+}
+
+interface OmdbMovie {
+	Title: string;
+	Year: string;
+	imdbID: string;
+	Type: string;
+	Poster: string;
+	Plot?: string;
+}
+
+interface OmdbSearchResult {
+	Search: OmdbMovie[];
+	totalResults: string;
+	Response: "True" | "False";
+	Error?: string;
+}
+
+export async function getTitles(titles: string): Promise<OmdbSearchResult> {
 	const response = await fetch(
-		`${TITLE_URL}/search/titles?query=${searchQuery}&limit=${limit}`,
+		`${BASE_URL}/?apikey=${API_KEY}&s=${encodeURIComponent(titles)}`,
 	);
 
 	if (!response.ok) {
-		throw new Error(`HTTP error: ${response.status}`);
+		throw new Error("Couldnt fetch from OMDB");
 	}
 
-	return await response.json();
+	const data: OmdbSearchResult = await response.json();
+
+	if (data.Response === "False") {
+		throw new Error(data.Error || "Ingen film hittades");
+	}
+
+	return data;
 }
 
-export async function searchTitleID(searchID) {
-	const response = await fetch(`${TITLE_URL}/titles/${searchID}`);
+export async function selectedTitle(id: string) {
+	const response = await fetch(
+		`${BASE_URL}/?apikey=${API_KEY}&i=${encodeURIComponent(id)}`,
+	);
 
 	if (!response.ok) {
-		throw new Error(`HTTP error: ${response.status}`);
+		throw new Error("Title wasnt found");
 	}
 
-	return await response.json();
-}
+	const data = await response.json();
 
-export async function searchSeasonCount(id) {
-	const response = await fetch(`${TITLE_URL}/titles/${id}/seasons`);
-	if (!response.ok) {
-		throw new Error(`HTTP error: ${response.status}`);
-	}
-	return await response.json();
-}
-
-export async function searchEpisodeCount(id, seasons, onProgress) {
-	const allEpisodes = [];
-
-	// Update UI with which season its currently being fetched
-	for (let i = 0; i < seasons.length; i++) {
-		const s = seasons[i];
-		onProgress?.(i, seasons.length);
-
-		// Build correct URL with season and pagesize
-		const url = new URL(`${TITLE_URL}/titles/${id}/episodes`);
-		url.searchParams.set("pageSize", "50");
-		url.searchParams.set("season", s.season);
-
-		// Try three times before giving up
-		let retries = 3;
-		while (retries > 0) {
-			const res = await fetch(url);
-
-			// If rate is being limitied, wait one sec and try again
-			if (res.status === 429) {
-				await new Promise((resolve) => setTimeout(resolve, 1000));
-				retries--;
-				continue;
-			}
-			if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-
-			// Push episodes from a specific season into a list.
-			const data = await res.json();
-			allEpisodes.push(...data.episodes);
-			break;
-		}
-
-		// Wait before we go again.
-		await new Promise((resolve) => setTimeout(resolve, 300));
-	}
-
-	return { episodes: allEpisodes };
+	return data;
 }

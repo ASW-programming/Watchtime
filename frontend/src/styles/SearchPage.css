@@ -25,3 +25,11 @@
 	width: 90vw;
 	gap: 1rem;
 }
+
+/* Desktop */
+@media (min-width: 1168px) {
+	.searchBar {
+		flex-direction: row;
+		justify-content: center;
+	}
+}

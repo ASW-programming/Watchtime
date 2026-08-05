@@ -1,98 +1,65 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { getTitles } from "../utils/calls.ts";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import BaseBtn from "./BaseBtn.tsx";
-import { HomeIcon } from "../assets/Icons";
-import { searchTitle } from "../utils/calls";
-import "../styles/SearchResults.css";
 
-interface Title {
-	id: string;
-	primaryTitle: string;
-	type: string;
-	startYear: number;
-	primaryImage?: {
-		url: string;
-	};
-	rating?: {
-		aggregateRating: number;
-	};
+interface OmdbMovie {
+	Title: string;
+	Year: string;
+	imdbID: string;
+	Type: string;
+	Poster: string;
 }
 
-interface SearchResult {
-	titles: Title[];
+interface OmdbSearchResult {
+	Search: OmdbMovie[];
+	totalResults: string;
+	Response: string;
 }
 
 function SearchResults() {
 	const { query } = useParams<{ query: string }>();
-	const navigate = useNavigate();
-	const decodedQuery = decodeURIComponent(query ?? "");
+
+	if (!query) {
+		return <h1>Nothing was searched</h1>;
+	}
 
 	const {
-		data: movie,
+		data: results,
 		isLoading,
 		isError,
-	} = useQuery<SearchResult>({
-		queryKey: ["movies", decodedQuery],
-		queryFn: () => searchTitle(decodedQuery),
-		enabled: !!decodedQuery,
+	} = useQuery<OmdbSearchResult>({
+		queryKey: ["titles", query],
+		queryFn: () => getTitles(query),
 	});
 
-	if (isLoading) return <p className="waitingState">Loading...</p>;
-	if (isError)
+	if (isLoading) {
 		return (
 			<div>
-				<p className="waitingState">Something went wrong.</p>
-				<BaseBtn
-					className="homepageBtn"
-					icon={<HomeIcon size="32px" />}
-					title="Homepage"
-					onClick={() => navigate("/")}
-				/>
+				<h1>Loading</h1>
 			</div>
 		);
+	}
+	if (isError) {
+		return (
+			<div>
+				<h1>{isError}</h1>
+			</div>
+		);
+	}
 
 	return (
-		<div className="movieContent">
-			{movie?.titles?.map((title) => {
-				const imageUrl =
-					title.primaryImage?.url ??
-					"https://clasebcn.com/wp-content/uploads/2020/04/harold-thumb.jpg";
-				const rating = title.rating?.aggregateRating ?? "No rating";
-				return (
-					<div
-						key={title.id}
-						className="movieCardWrapper"
-						style={{
-							backgroundImage: `url(${imageUrl})`,
-							backgroundSize: "cover",
-							backgroundPosition: "center",
-						}}>
-						<Link to={`/${title.type}/${title.id}`}>
-							<div className="imgOverlay" />
-							<div className="movieCard">
-								<h2>{title.primaryTitle}</h2>
-								<img
-									className="thumbnail"
-									src={imageUrl}
-									referrerPolicy="no-referrer"
-								/>
-								<ul className="infoList">
-									<p>Type: {title.type}</p>
-									<p>Year: {title.startYear}</p>
-									<p>Rating: {rating}/10</p>
-								</ul>
-							</div>
+		<div>
+			<ul>
+				{results?.Search.map((r) => (
+					<li key={r.imdbID}>
+						{r.Title} ({r.Year})
+						<Link to={`/${r.imdbID}`}>
+							<BaseBtn text="Open" />
 						</Link>
-					</div>
-				);
-			})}
-			<BaseBtn
-				className="homepageBtn"
-				icon={<HomeIcon size="32px" />}
-				title="Homepage"
-				onClick={() => navigate("/")}
-			/>
+					</li>
+				))}
+			</ul>
 		</div>
 	);
 }
