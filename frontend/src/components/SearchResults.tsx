@@ -54,7 +54,7 @@ function SearchResults() {
 				{results?.Search.map((r) => (
 					<li key={r.imdbID}>
 						{r.Title} ({r.Year})
-						<Link to={`/${r.Type}/${r.imdbID}`}>
+						<Link to={`/${r.imdbID}`}>
 							<BaseBtn text="Open" />
 						</Link>
 					</li>

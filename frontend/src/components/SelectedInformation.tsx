@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { selectedTitle } from "../utils/calls";
 
-function SerieDetails() {
+function SelectedInformation() {
 	const { id } = useParams<{ id: string }>();
 
 	const {
@@ -14,12 +14,6 @@ function SerieDetails() {
 		queryFn: () => selectedTitle(id!),
 		enabled: !!id,
 	});
-
-	const years = serie.Year.split("–");
-	const startYear = years[0];
-	const stopYear = years[1];
-
-	const genres = serie.Genre.split(", ");
 
 	if (isLoading) {
 		return (
@@ -35,6 +29,12 @@ function SerieDetails() {
 			</div>
 		);
 	}
+
+	const years = serie.Year.split("–");
+	const startYear = years[0];
+	const stopYear = years[1];
+
+	const genres = serie.Genre.split(", ");
 
 	return (
 		<div>
@@ -55,4 +55,4 @@ function SerieDetails() {
 	);
 }
 
-export default SerieDetails;
+export default SelectedInformation;
