@@ -31,6 +31,8 @@ function SearchResults() {
 	} = useQuery<OmdbSearchResult>({
 		queryKey: ["titles", query],
 		queryFn: () => getTitles(query),
+		staleTime: 1000 * 60 * 10,
+		refetchOnWindowFocus: false,
 	});
 
 	if (isLoading) {
