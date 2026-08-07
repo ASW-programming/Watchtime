@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { selectedTitle } from "../utils/calls";
 import "../styles/SelectedInformation.css";
 import Checkbox from "./Checkbox";
+import { useState } from "react";
 
 function SelectedInformation() {
 	const { id } = useParams<{ id: string }>();
@@ -18,6 +19,8 @@ function SelectedInformation() {
 		staleTime: 1000 * 60 * 10,
 		refetchOnWindowFocus: false,
 	});
+
+	const [checkedSeasons, setCheckedSeasons] = useState<number[]>([]);
 
 	if (isLoading) {
 		return (
@@ -77,7 +80,41 @@ function SelectedInformation() {
 									<tr key={s}>
 										<td>S{s}</td>
 										<td>
-											<Checkbox />
+											<div className="checkbox-wrapper-18">
+												<div className="round">
+													<Checkbox
+														id={`checkbox-season-${s}`}
+														checked={checkedSeasons.includes(
+															s,
+														)}
+														onChange={(e) => {
+															if (
+																e.target.checked
+															) {
+																setCheckedSeasons(
+																	(prev) => [
+																		...prev,
+																		s,
+																	],
+																);
+															} else {
+																setCheckedSeasons(
+																	(prev) =>
+																		prev.filter(
+																			(
+																				season,
+																			) =>
+																				season !==
+																				s,
+																		),
+																);
+															}
+														}}
+													/>
+													<label
+														htmlFor={`checkbox-season-${s}`}></label>
+												</div>
+											</div>
 										</td>
 									</tr>
 								))}
