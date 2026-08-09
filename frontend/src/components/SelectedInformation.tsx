@@ -1,12 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { selectedTitle } from "../utils/calls";
 import "../styles/SelectedInformation.css";
 import Checkbox from "./Checkbox";
 import { useState } from "react";
+import BaseBtn from "./BaseBtn";
+import { ReturnIcon } from "../assets/Icons";
 
 function SelectedInformation() {
 	const { id } = useParams<{ id: string }>();
+	const navigate = useNavigate();
+
+	const [watchList, setWatchList] = useState(false);
 
 	const {
 		data: chosenTitle,
@@ -122,7 +127,21 @@ function SelectedInformation() {
 						</table>
 					</div>
 				)}
-
+				<div className="checkbox-wrapper-18">
+					<div className="round">
+						<div className="watchlist">
+							<p>Add to Watchlist:</p>
+							<Checkbox
+								id={`checkbox-watchlist`}
+								checked={watchList}
+								onChange={(e) => {
+									setWatchList(e.target.checked);
+								}}
+							/>
+							<label htmlFor={`checkbox-watchlist`}></label>
+						</div>
+					</div>
+				</div>
 				{/* If its a movie */}
 				{chosenTitle.Type == "movie" && (
 					<p>Released: {chosenTitle.Year}</p>
@@ -141,6 +160,11 @@ function SelectedInformation() {
 					))}
 				</div>
 			</div>
+			<BaseBtn
+				className="returnBtn"
+				icon={ReturnIcon()}
+				onClick={() => navigate(-1)}
+			/>
 		</div>
 	);
 }
