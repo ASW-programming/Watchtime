@@ -131,3 +131,29 @@
 	gap: 1rem;
 	justify-content: center;
 }
+
+@media (min-width: 1280px) {
+	.selectedCard {
+		width: 100%;
+	}
+
+	.titleCard {
+		display: flex;
+		justify-content: start;
+	}
+
+	.titleName {
+		order: 1;
+		font-size: 3rem;
+		margin: 0;
+		padding-inline: 1rem;
+	}
+
+	.plot {
+		width: 30%;
+	}
+
+	.returnBtn {
+		cursor: pointer;
+	}
+}

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { selectedTitle } from "../utils/calls";
 import "../styles/SelectedInformation.css";
 import Checkbox from "./Checkbox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BaseBtn from "./BaseBtn";
 import { ReturnIcon } from "../assets/Icons";
 
@@ -19,7 +19,7 @@ function SelectedInformation() {
 		isError,
 	} = useQuery({
 		queryKey: ["title", id],
-		queryFn: () => selectedTitle(id!),
+		queryFn: () => selectedTitle(id ?? ""),
 		enabled: !!id,
 		staleTime: 1000 * 60 * 10,
 		refetchOnWindowFocus: false,
@@ -59,10 +59,12 @@ function SelectedInformation() {
 	return (
 		<div className="selectedContent">
 			<div className="selectedCard">
-				<h1>{chosenTitle.Title}</h1>
-				<img src={chosenTitle.Poster}></img>
-				<p>Score: {chosenTitle.imdbRating}</p>
+				<div className="titleCard">
+					<h1 className="titleName">{chosenTitle.Title}</h1>
+					<img src={chosenTitle.Poster}></img>
+				</div>
 				<p className="plot">{chosenTitle.Plot}</p>
+				<p>Score: {chosenTitle.imdbRating}</p>
 
 				{/* If its a serie */}
 				{chosenTitle.Type == "series" && (
