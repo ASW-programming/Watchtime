@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { selectedTitle } from "../utils/calls";
 import "../styles/SelectedInformation.css";
 import Checkbox from "./Checkbox";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BaseBtn from "./BaseBtn";
 import { ReturnIcon } from "../assets/Icons";
 
@@ -12,6 +12,7 @@ function SelectedInformation() {
 	const navigate = useNavigate();
 
 	const [watchList, setWatchList] = useState(false);
+	const [seen, setSeen] = useState(false);
 
 	const {
 		data: chosenTitle,
@@ -61,7 +62,14 @@ function SelectedInformation() {
 			<div className="selectedCard">
 				<div className="titleCard">
 					<h1 className="titleName">{chosenTitle.Title}</h1>
-					<img src={chosenTitle.Poster}></img>
+					<img
+						className="titlePoster"
+						src={
+							chosenTitle.Poster !== "N/A"
+								? chosenTitle.Poster
+								: "https://i.pinimg.com/236x/30/df/1c/30df1cb8981338d42ed2722ab74cb51e.jpg"
+						}
+					/>
 				</div>
 				<p className="plot">{chosenTitle.Plot}</p>
 				<p>Score: {chosenTitle.imdbRating}</p>
@@ -71,7 +79,7 @@ function SelectedInformation() {
 					<div className="seriesInfo">
 						<div className="airtime">
 							<p>Started: {startYear}</p>
-							<p>Ended: {stopYear}</p>
+							<p>Ended: {stopYear || "Ongoing"}</p>
 						</div>
 
 						<table className="seasonTable">
@@ -140,13 +148,30 @@ function SelectedInformation() {
 									setWatchList(e.target.checked);
 								}}
 							/>
-							<label htmlFor={`checkbox-watchlist`}></label>
+							<label htmlFor={`checkbox-watchlist`} />
 						</div>
 					</div>
 				</div>
 				{/* If its a movie */}
 				{chosenTitle.Type == "movie" && (
-					<p>Released: {chosenTitle.Year}</p>
+					<div>
+						<div className="checkbox-wrapper-18">
+							<div className="round">
+								<div className="watchlist">
+									<p>Seen:</p>
+									<Checkbox
+										id={`checkbox-seen`}
+										checked={seen}
+										onChange={(e) => {
+											setSeen(e.target.checked);
+										}}
+									/>
+									<label htmlFor={`checkbox-seen`} />
+								</div>
+							</div>
+						</div>
+						<p>Released: {chosenTitle.Year}</p>
+					</div>
 				)}
 				<p>Runtime: {chosenTitle.Runtime}</p>
 				<div>

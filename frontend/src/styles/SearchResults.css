@@ -1,0 +1,44 @@
+.titleListLink {
+	text-decoration: none;
+	color: inherit;
+}
+
+.resultList {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 10px;
+	text-align: center;
+	padding: 0;
+}
+
+.titleList {
+	border: 1px solid white;
+	padding-block-start: 1rem;
+	border-radius: 5%;
+	height: 100%;
+}
+
+.searchImg {
+	width: 80%;
+	aspect-ratio: 2 / 3;
+	object-fit: contain;
+}
+
+.searchTitle {
+	padding-inline: 0.5rem;
+}
+
+/* Desktop */
+@media (min-width: 1280px) {
+	.resultList {
+		grid-template-columns: repeat(5, 1fr);
+	}
+
+	.searchImg {
+		width: 50%;
+	}
+
+	.searchTitle {
+		font-size: 1.2rem;
+	}
+}

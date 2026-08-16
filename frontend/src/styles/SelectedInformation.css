@@ -15,6 +15,11 @@
 	border-radius: 16px;
 }
 
+.titlePoster {
+	width: 50dvw;
+	aspect-ratio: 2 / 3;
+}
+
 .plot {
 	width: 80dvw;
 	text-align: justify;
@@ -74,6 +79,7 @@
 	margin-block: 0.25rem;
 }
 
+/* Checkboxes */
 .checkbox-wrapper-18 .round {
 	position: relative;
 }
@@ -125,15 +131,20 @@
 	inset-inline-end: 1rem;
 }
 
-.checkbox-wrapper-18 .watchlist {
+/* Watchlist checkbox */
+.checkbox-wrapper-18 .watchlist,
+.checkbox-wrapper-18 .checkbox-seen {
 	display: flex;
 	align-items: center;
 	gap: 1rem;
 	justify-content: center;
 }
 
+/* Desktop */
 @media (min-width: 1280px) {
 	.selectedCard {
+		justify-content: flex-start;
+		padding: 1rem 0;
 		width: 100%;
 	}
 
@@ -151,9 +162,17 @@
 
 	.plot {
 		width: 30%;
+		margin-inline-start: 1rem;
 	}
 
 	.returnBtn {
 		cursor: pointer;
+	}
+
+	.titlePoster {
+		height: 80dvh;
+		width: auto;
+		object-fit: contain;
+		margin-inline-start: 1rem;
 	}
 }
