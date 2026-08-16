@@ -1,13 +1,24 @@
 interface CheckboxProps {
 	checked?: boolean;
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	id?: string;
+	className?: string;
 }
 
-function Checkbox({ checked, onChange }: CheckboxProps): React.JSX.Element {
+function Checkbox({
+	checked,
+	onChange,
+	id,
+	className,
+}: CheckboxProps): React.JSX.Element {
 	return (
-		<div>
-			<input type="checkbox" checked={checked} onChange={onChange} />
-		</div>
+		<input
+			type="checkbox"
+			checked={checked ?? false}
+			onChange={onChange}
+			id={id}
+			className={className}
+		/>
 	);
 }
 

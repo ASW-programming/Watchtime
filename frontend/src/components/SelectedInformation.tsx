@@ -1,19 +1,31 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { selectedTitle } from "../utils/calls";
+import "../styles/SelectedInformation.css";
+import Checkbox from "./Checkbox";
+import { useEffect, useState } from "react";
+import BaseBtn from "./BaseBtn";
+import { ReturnIcon } from "../assets/Icons";
 
 function SelectedInformation() {
 	const { id } = useParams<{ id: string }>();
+	const navigate = useNavigate();
+
+	const [watchList, setWatchList] = useState(false);
 
 	const {
-		data: serie,
+		data: chosenTitle,
 		isLoading,
 		isError,
 	} = useQuery({
-		queryKey: ["title"],
-		queryFn: () => selectedTitle(id!),
+		queryKey: ["title", id],
+		queryFn: () => selectedTitle(id ?? ""),
 		enabled: !!id,
+		staleTime: 1000 * 60 * 10,
+		refetchOnWindowFocus: false,
 	});
+
+	const [checkedSeasons, setCheckedSeasons] = useState<number[]>([]);
 
 	if (isLoading) {
 		return (
@@ -30,27 +42,131 @@ function SelectedInformation() {
 		);
 	}
 
-	const years = serie.Year.split("–");
+	const years = chosenTitle.Year.split("–");
 	const startYear = years[0];
 	const stopYear = years[1];
 
-	const genres = serie.Genre.split(", ");
+	const genres = chosenTitle.Genre.split(", ");
+	const actors = chosenTitle.Actors.split(", ");
+
+	const totalSeasons = Number(chosenTitle.totalSeasons);
+	const seasonsStepped: number[] = [];
+
+	for (let i = 1; i <= totalSeasons; i++) {
+		seasonsStepped.push(i);
+	}
 
 	return (
-		<div>
-			<ul>
-				<h2>{serie.Title}</h2>
-				<img src={serie.Poster}></img>
-				<p>{serie.Plot}</p>
-				<p>Started: {startYear}</p>
-				<p>Ended: {stopYear}</p>
-				<p>Runtime: {serie.Runtime}</p>
-				{genres.map((g: Array<string>, index: number) => (
-					<li key={index}>{g}</li>
-				))}
+		<div className="selectedContent">
+			<div className="selectedCard">
+				<div className="titleCard">
+					<h1 className="titleName">{chosenTitle.Title}</h1>
+					<img src={chosenTitle.Poster}></img>
+				</div>
+				<p className="plot">{chosenTitle.Plot}</p>
+				<p>Score: {chosenTitle.imdbRating}</p>
 
-				<p>{serie.Actors}</p>
-			</ul>
+				{/* If its a serie */}
+				{chosenTitle.Type == "series" && (
+					<div className="seriesInfo">
+						<div className="airtime">
+							<p>Started: {startYear}</p>
+							<p>Ended: {stopYear}</p>
+						</div>
+
+						<table className="seasonTable">
+							<thead className="tableHead">
+								<tr>
+									<th>Season</th>
+									<th>Seen</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								{seasonsStepped.map((s) => (
+									<tr key={s}>
+										<td>S{s}</td>
+										<td>
+											<div className="checkbox-wrapper-18">
+												<div className="round">
+													<Checkbox
+														id={`checkbox-season-${s}`}
+														checked={checkedSeasons.includes(
+															s,
+														)}
+														onChange={(e) => {
+															if (
+																e.target.checked
+															) {
+																setCheckedSeasons(
+																	(prev) => [
+																		...prev,
+																		s,
+																	],
+																);
+															} else {
+																setCheckedSeasons(
+																	(prev) =>
+																		prev.filter(
+																			(
+																				season,
+																			) =>
+																				season !==
+																				s,
+																		),
+																);
+															}
+														}}
+													/>
+													<label
+														htmlFor={`checkbox-season-${s}`}></label>
+												</div>
+											</div>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
+				<div className="checkbox-wrapper-18">
+					<div className="round">
+						<div className="watchlist">
+							<p>Add to Watchlist:</p>
+							<Checkbox
+								id={`checkbox-watchlist`}
+								checked={watchList}
+								onChange={(e) => {
+									setWatchList(e.target.checked);
+								}}
+							/>
+							<label htmlFor={`checkbox-watchlist`}></label>
+						</div>
+					</div>
+				</div>
+				{/* If its a movie */}
+				{chosenTitle.Type == "movie" && (
+					<p>Released: {chosenTitle.Year}</p>
+				)}
+				<p>Runtime: {chosenTitle.Runtime}</p>
+				<div>
+					<p>Genres:</p>
+					{genres.map((g: Array<string>, index: number) => (
+						<li key={index}>{g}</li>
+					))}
+				</div>
+				<div>
+					<p>Starring:</p>
+					{actors.map((a: Array<string>, index: number) => (
+						<li key={index}>{a}</li>
+					))}
+				</div>
+			</div>
+			<BaseBtn
+				className="returnBtn"
+				icon={ReturnIcon()}
+				onClick={() => navigate(-1)}
+			/>
 		</div>
 	);
 }
