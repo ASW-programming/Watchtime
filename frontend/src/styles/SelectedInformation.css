@@ -151,18 +151,24 @@
 	.titleCard {
 		display: flex;
 		justify-content: start;
+		margin-inline-start: 5%;
+	}
+
+	.titleText {
+		order: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		margin-inline-start: 1rem;
 	}
 
 	.titleName {
-		order: 1;
 		font-size: 3rem;
 		margin: 0;
-		padding-inline: 1rem;
 	}
 
 	.plot {
-		width: 30%;
-		margin-inline-start: 1rem;
+		width: 50%;
 	}
 
 	.returnBtn {
@@ -170,9 +176,9 @@
 	}
 
 	.titlePoster {
+		order: 0;
 		height: 80dvh;
 		width: auto;
 		object-fit: contain;
-		margin-inline-start: 1rem;
 	}
 }

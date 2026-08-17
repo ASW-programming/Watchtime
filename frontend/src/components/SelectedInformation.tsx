@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { selectedTitle } from "../utils/calls";
 import "../styles/SelectedInformation.css";
 import Checkbox from "./Checkbox";
@@ -61,7 +61,13 @@ function SelectedInformation() {
 		<div className="selectedContent">
 			<div className="selectedCard">
 				<div className="titleCard">
-					<h1 className="titleName">{chosenTitle.Title}</h1>
+					<div className="titleText">
+						<h1 className="titleName">{chosenTitle.Title}</h1>
+						<p className="titleScore">
+							Score: {chosenTitle.imdbRating}
+						</p>
+						<p className="plot">{chosenTitle.Plot}</p>
+					</div>
 					<img
 						className="titlePoster"
 						src={
@@ -71,8 +77,6 @@ function SelectedInformation() {
 						}
 					/>
 				</div>
-				<p className="plot">{chosenTitle.Plot}</p>
-				<p>Score: {chosenTitle.imdbRating}</p>
 
 				{/* If its a serie */}
 				{chosenTitle.Type == "series" && (
@@ -186,6 +190,10 @@ function SelectedInformation() {
 						<li key={index}>{a}</li>
 					))}
 				</div>
+
+				<a href={`https://www.imdb.com/title/${chosenTitle.imdbID}`}>
+					IMDB
+				</a>
 			</div>
 			<BaseBtn
 				className="returnBtn"
