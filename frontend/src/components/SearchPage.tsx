@@ -28,7 +28,7 @@ function SearchPage() {
 					/>
 					<BaseBtn
 						className="searchBtn"
-						text="Click Me"
+						text="Search"
 						type="submit"
 					/>
 				</div>

@@ -1,7 +1,9 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getTitles } from "../utils/calls.ts";
 import { useQuery } from "@tanstack/react-query";
+import "../styles/SearchResults.css";
 import BaseBtn from "./BaseBtn.tsx";
+import { ReturnIcon } from "../assets/Icons.tsx";
 
 interface OmdbMovie {
 	Title: string;
@@ -19,6 +21,8 @@ interface OmdbSearchResult {
 
 function SearchResults() {
 	const { query } = useParams<{ query: string }>();
+
+	const navigate = useNavigate();
 
 	if (!query) {
 		return <h1>Nothing was searched</h1>;
@@ -52,16 +56,32 @@ function SearchResults() {
 
 	return (
 		<div>
-			<ul>
+			<ul className="resultList">
 				{results?.Search.map((r) => (
-					<li key={r.imdbID}>
-						{r.Title} ({r.Year})
-						<Link to={`/${r.imdbID}`}>
-							<BaseBtn text="Open" />
+					<li key={r.imdbID} className="titleList">
+						<Link to={`/${r.imdbID}`} className="titleListLink">
+							<img
+								className="searchImg"
+								src={
+									r.Poster !== "N/A"
+										? r.Poster
+										: "https://i.pinimg.com/236x/30/df/1c/30df1cb8981338d42ed2722ab74cb51e.jpg"
+								}
+							/>
+
+							<p className="searchTitle">
+								{r.Title} ({r.Year})
+							</p>
 						</Link>
 					</li>
 				))}
 			</ul>
+
+			<BaseBtn
+				className="returnBtn"
+				icon={ReturnIcon()}
+				onClick={() => navigate(-1)}
+			/>
 		</div>
 	);
 }
