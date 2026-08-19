@@ -1,7 +1,9 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getTitles } from "../utils/calls.ts";
 import { useQuery } from "@tanstack/react-query";
 import "../styles/SearchResults.css";
+import BaseBtn from "./BaseBtn.tsx";
+import { ReturnIcon } from "../assets/Icons.tsx";
 
 interface OmdbMovie {
 	Title: string;
@@ -19,6 +21,8 @@ interface OmdbSearchResult {
 
 function SearchResults() {
 	const { query } = useParams<{ query: string }>();
+
+	const navigate = useNavigate();
 
 	if (!query) {
 		return <h1>Nothing was searched</h1>;
@@ -72,6 +76,12 @@ function SearchResults() {
 					</li>
 				))}
 			</ul>
+
+			<BaseBtn
+				className="returnBtn"
+				icon={ReturnIcon()}
+				onClick={() => navigate(-1)}
+			/>
 		</div>
 	);
 }
