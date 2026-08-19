@@ -4,6 +4,9 @@ import SearchResults from "./components/SearchResults";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SerieDetails from "./components/SelectedInformation.tsx";
 import Header from "./components/Header";
+import Watchlist from "./components/Watchlist.tsx";
+import Watching from "./components/Watching.tsx";
+import Watched from "./components/Watched.tsx";
 
 function App() {
 	return (
@@ -14,6 +17,9 @@ function App() {
 					<Route path="/" element={<SearchPage />} />
 					<Route path="/:id" element={<SerieDetails />} />
 					<Route path="/search/:query" element={<SearchResults />} />
+					<Route path="/watchlist" element={<Watchlist />} />
+					<Route path="/watching" element={<Watching />} />
+					<Route path="/watched" element={<Watched />} />
 				</Routes>
 			</Router>
 		</div>

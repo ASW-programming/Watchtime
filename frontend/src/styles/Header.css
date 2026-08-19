@@ -1,0 +1,32 @@
+.headerDiv {
+	height: 10vh;
+	margin-block: 0.5rem;
+}
+
+.header {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	border: 1px solid white;
+}
+
+.homeBtn,
+.watchedBtn,
+.watchingBtn,
+.watchlistBtn {
+	height: 3rem;
+}
+
+.homeBtn:hover,
+.watchedBtn:hover,
+.watchingBtn:hover,
+.watchlistBtn:hover {
+	cursor: pointer;
+}
+
+.active {
+	background-color: red;
+}
