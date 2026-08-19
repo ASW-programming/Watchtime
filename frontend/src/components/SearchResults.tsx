@@ -2,6 +2,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { getTitles } from "../utils/calls.ts";
 import { useQuery } from "@tanstack/react-query";
 import "../styles/SearchResults.css";
+import "../styles/Loading.css";
+import "../styles/Error.css";
 import BaseBtn from "./BaseBtn.tsx";
 import { ReturnIcon } from "../assets/Icons.tsx";
 
@@ -17,6 +19,7 @@ interface OmdbSearchResult {
 	Search: OmdbMovie[];
 	totalResults: string;
 	Response: string;
+	Error?: string;
 }
 
 function SearchResults() {
@@ -41,12 +44,20 @@ function SearchResults() {
 
 	if (isLoading) {
 		return (
-			<div>
+			<div className="loading">
 				<h1>Loading</h1>
 			</div>
 		);
 	}
-	if (isError) {
+	if (results?.Response === "False") {
+		return (
+			<div className="error">
+				<h1>{results?.Error}</h1>
+			</div>
+		);
+	}
+
+	if (isError || results?.Response === "False") {
 		return (
 			<div>
 				<h1>{isError}</h1>

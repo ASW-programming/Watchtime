@@ -32,10 +32,6 @@ export async function getTitles(titles: string): Promise<OmdbSearchResult> {
 
 	const data: OmdbSearchResult = await response.json();
 
-	if (data.Response === "False") {
-		throw new Error(data.Error || "Ingen film hittades");
-	}
-
 	return data;
 }
 

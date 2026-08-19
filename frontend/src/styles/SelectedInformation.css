@@ -97,6 +97,8 @@ a {
 /* Checkboxes */
 .checkbox-wrapper-18 .round {
 	position: relative;
+	display: flex;
+	justify-content: center;
 }
 
 .checkbox-wrapper-18 .round label {
