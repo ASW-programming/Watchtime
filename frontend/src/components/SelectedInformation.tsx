@@ -3,9 +3,29 @@ import { useNavigate, useParams } from "react-router-dom";
 import { selectedTitle } from "../utils/calls";
 import "../styles/SelectedInformation.css";
 import Checkbox from "./Checkbox";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BaseBtn from "./BaseBtn";
 import { ReturnIcon } from "../assets/Icons";
+
+interface WatchlistItem {
+	title: string;
+	poster: string;
+	watchList: boolean;
+	seen: boolean;
+	checkedSeasons: number[];
+	type: string;
+}
+
+function getWatchlistStorage(): Record<string, WatchlistItem> {
+	const stored = localStorage.getItem("watchlist");
+	return stored ? JSON.parse(stored) : {};
+}
+
+function saveWatchlistItem(item: WatchlistItem) {
+	const fullList = getWatchlistStorage();
+	fullList[item.title] = item;
+	localStorage.setItem("watchlist", JSON.stringify(fullList));
+}
 
 function SelectedInformation() {
 	const { id } = useParams<{ id: string }>();
@@ -13,6 +33,7 @@ function SelectedInformation() {
 
 	const [watchList, setWatchList] = useState(false);
 	const [seen, setSeen] = useState(false);
+	const [checkedSeasons, setCheckedSeasons] = useState<number[]>([]);
 
 	const {
 		data: chosenTitle,
@@ -26,7 +47,18 @@ function SelectedInformation() {
 		refetchOnWindowFocus: false,
 	});
 
-	const [checkedSeasons, setCheckedSeasons] = useState<number[]>([]);
+	useEffect(() => {
+		if (!chosenTitle) return;
+
+		const fullList = getWatchlistStorage();
+		const existing = fullList[chosenTitle.Title];
+
+		if (existing) {
+			setWatchList(existing.watchList);
+			setSeen(existing.seen);
+			setCheckedSeasons(existing.checkedSeasons ?? []);
+		}
+	}, [chosenTitle]);
 
 	if (isLoading) {
 		return (
@@ -58,6 +90,9 @@ function SelectedInformation() {
 	}
 
 	const isSeries = chosenTitle.Type == "series";
+
+	const allSeasonsSeen =
+		isSeries && totalSeasons > 0 && checkedSeasons.length === totalSeasons;
 
 	return (
 		<div className="selectedContent">
@@ -97,9 +132,17 @@ function SelectedInformation() {
 												id={`checkbox-watchlist`}
 												checked={watchList}
 												onChange={(e) => {
-													setWatchList(
-														e.target.checked,
-													);
+													const newWatchList =
+														e.target.checked;
+													setWatchList(newWatchList);
+													saveWatchlistItem({
+														title: chosenTitle.Title,
+														poster: chosenTitle.Poster,
+														watchList: newWatchList,
+														seen,
+														checkedSeasons,
+														type: chosenTitle.Type,
+													});
 												}}
 											/>
 											<label
@@ -119,10 +162,18 @@ function SelectedInformation() {
 														id={`checkbox-seen`}
 														checked={seen}
 														onChange={(e) => {
-															setSeen(
+															const newSeen =
 																e.target
-																	.checked,
-															);
+																	.checked;
+															setSeen(newSeen);
+															saveWatchlistItem({
+																title: chosenTitle.Title,
+																poster: chosenTitle.Poster,
+																watchList,
+																seen: newSeen,
+																checkedSeasons,
+																type: chosenTitle.Type,
+															});
 														}}
 													/>
 													<label
@@ -151,6 +202,11 @@ function SelectedInformation() {
 
 							{isSeries && (
 								<div className="detailsColumn detailsMiddle">
+									<p>
+										{allSeasonsSeen
+											? "Series Completed!"
+											: "Not Completed"}
+									</p>
 									<table className="seasonTable">
 										<thead className="tableHead">
 											<tr>
@@ -174,33 +230,43 @@ function SelectedInformation() {
 																	onChange={(
 																		e,
 																	) => {
+																		let newCheckedSeasons: number[];
+
 																		if (
 																			e
 																				.target
 																				.checked
 																		) {
-																			setCheckedSeasons(
-																				(
-																					prev,
-																				) => [
-																					...prev,
+																			newCheckedSeasons =
+																				[
+																					...checkedSeasons,
 																					s,
-																				],
-																			);
+																				];
 																		} else {
-																			setCheckedSeasons(
-																				(
-																					prev,
-																				) =>
-																					prev.filter(
-																						(
-																							season,
-																						) =>
-																							season !==
-																							s,
-																					),
-																			);
+																			newCheckedSeasons =
+																				checkedSeasons.filter(
+																					(
+																						season,
+																					) =>
+																						season !==
+																						s,
+																				);
 																		}
+
+																		setCheckedSeasons(
+																			newCheckedSeasons,
+																		);
+																		saveWatchlistItem(
+																			{
+																				title: chosenTitle.Title,
+																				poster: chosenTitle.Poster,
+																				watchList,
+																				seen,
+																				checkedSeasons:
+																					newCheckedSeasons,
+																				type: chosenTitle.Type,
+																			},
+																		);
 																	}}
 																/>
 																<label
