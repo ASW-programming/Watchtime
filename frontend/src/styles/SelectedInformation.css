@@ -79,6 +79,11 @@ a {
 	padding-inline-start: 40px;
 }
 
+.seasonTable .checkbox-wrapper-18 .round {
+	display: flex;
+	justify-content: center;
+}
+
 .seasonBox {
 	align-items: center;
 }
@@ -97,8 +102,6 @@ a {
 /* Checkboxes */
 .checkbox-wrapper-18 .round {
 	position: relative;
-	display: flex;
-	justify-content: center;
 }
 
 .checkbox-wrapper-18 .round label {
@@ -188,7 +191,6 @@ a {
 		flex-direction: column;
 		align-items: start;
 		gap: 1.5rem;
-		margin-inline-start: 1rem;
 	}
 
 	.titleText {
