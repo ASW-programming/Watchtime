@@ -1,29 +1,24 @@
 import { useEffect, useState } from "react";
-
-interface WatchlistItem {
-	title: string;
-	poster: string;
-	watchList: boolean;
-	seen: boolean;
-	checkedSeasons: number[];
-	type: "movie" | "series";
-}
-
-function getWatchlistStorage(): Record<string, WatchlistItem> {
-	const stored = localStorage.getItem("watchlist");
-	return stored ? JSON.parse(stored) : {};
-}
+import {
+	getWatchlistStorage,
+	isFullySeen,
+	WatchlistItem,
+} from "../utils/watchlist";
 
 function Watchlist() {
 	const [items, setItems] = useState<WatchlistItem[]>([]);
 
 	useEffect(() => {
 		const fullList = getWatchlistStorage();
-		setItems(Object.values(fullList));
+		const seenItems = Object.values(fullList).filter(
+			(item) => item.watchList || isFullySeen(item),
+		);
+
+		setItems(seenItems);
 	}, []);
 
 	return (
-		<div>
+		<ul>
 			{items.map((item) => (
 				<li key={item.title}>
 					<img src={item.poster} alt={item.title} />
@@ -37,7 +32,7 @@ function Watchlist() {
 					</p>
 				</li>
 			))}
-		</div>
+		</ul>
 	);
 }
 

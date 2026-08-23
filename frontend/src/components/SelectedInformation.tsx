@@ -6,26 +6,11 @@ import Checkbox from "./Checkbox";
 import { useState, useEffect } from "react";
 import BaseBtn from "./BaseBtn";
 import { ReturnIcon } from "../assets/Icons";
-
-interface WatchlistItem {
-	title: string;
-	poster: string;
-	watchList: boolean;
-	seen: boolean;
-	checkedSeasons: number[];
-	type: string;
-}
-
-function getWatchlistStorage(): Record<string, WatchlistItem> {
-	const stored = localStorage.getItem("watchlist");
-	return stored ? JSON.parse(stored) : {};
-}
-
-function saveWatchlistItem(item: WatchlistItem) {
-	const fullList = getWatchlistStorage();
-	fullList[item.title] = item;
-	localStorage.setItem("watchlist", JSON.stringify(fullList));
-}
+import {
+	getWatchlistStorage,
+	saveWatchlistItem,
+	isFullySeen,
+} from "../utils/watchlist";
 
 function SelectedInformation() {
 	const { id } = useParams<{ id: string }>();
@@ -91,8 +76,15 @@ function SelectedInformation() {
 
 	const isSeries = chosenTitle.Type == "series";
 
-	const allSeasonsSeen =
-		isSeries && totalSeasons > 0 && checkedSeasons.length === totalSeasons;
+	const allSeasonsSeen = isFullySeen({
+		title: chosenTitle.Title,
+		poster: chosenTitle.Poster,
+		watchList,
+		seen,
+		checkedSeasons,
+		totalSeasons,
+		type: chosenTitle.Type,
+	});
 
 	return (
 		<div className="selectedContent">
@@ -141,6 +133,7 @@ function SelectedInformation() {
 														watchList: newWatchList,
 														seen,
 														checkedSeasons,
+														totalSeasons,
 														type: chosenTitle.Type,
 													});
 												}}
@@ -172,6 +165,7 @@ function SelectedInformation() {
 																watchList,
 																seen: newSeen,
 																checkedSeasons,
+																totalSeasons,
 																type: chosenTitle.Type,
 															});
 														}}
@@ -264,6 +258,7 @@ function SelectedInformation() {
 																				seen,
 																				checkedSeasons:
 																					newCheckedSeasons,
+																				totalSeasons,
 																				type: chosenTitle.Type,
 																			},
 																		);
