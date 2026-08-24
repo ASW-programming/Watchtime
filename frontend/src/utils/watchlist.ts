@@ -6,6 +6,7 @@ export interface WatchlistItem {
 	checkedSeasons: number[];
 	totalSeasons: number;
 	type: "movie" | "series";
+	imdbID: string;
 }
 
 export function getWatchlistStorage(): Record<string, WatchlistItem> {
@@ -27,5 +28,14 @@ export function isFullySeen(item: WatchlistItem): boolean {
 	return (
 		item.totalSeasons > 0 &&
 		item.checkedSeasons.length === item.totalSeasons
+	);
+}
+
+export function currentlyWatching(item: WatchlistItem): boolean {
+	return (
+		item.type === "series" &&
+		item.totalSeasons > 0 &&
+		item.checkedSeasons.length > 0 &&
+		item.checkedSeasons.length < item.totalSeasons
 	);
 }

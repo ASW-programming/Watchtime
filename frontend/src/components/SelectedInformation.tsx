@@ -84,6 +84,7 @@ function SelectedInformation() {
 		checkedSeasons,
 		totalSeasons,
 		type: chosenTitle.Type,
+		imdbID: chosenTitle.imdbID,
 	});
 
 	return (
@@ -135,6 +136,7 @@ function SelectedInformation() {
 														checkedSeasons,
 														totalSeasons,
 														type: chosenTitle.Type,
+														imdbID: chosenTitle.imdbID,
 													});
 												}}
 											/>
@@ -159,14 +161,25 @@ function SelectedInformation() {
 																e.target
 																	.checked;
 															setSeen(newSeen);
+
+															const newWatchList =
+																newSeen
+																	? false
+																	: watchList;
+															setWatchList(
+																newWatchList,
+															);
+
 															saveWatchlistItem({
 																title: chosenTitle.Title,
 																poster: chosenTitle.Poster,
-																watchList,
+																watchList:
+																	newWatchList,
 																seen: newSeen,
 																checkedSeasons,
 																totalSeasons,
 																type: chosenTitle.Type,
+																imdbID: chosenTitle.imdbID,
 															});
 														}}
 													/>
@@ -247,19 +260,36 @@ function SelectedInformation() {
 																				);
 																		}
 
+																		const allSeasonsNowSeen =
+																			totalSeasons >
+																				0 &&
+																			newCheckedSeasons.length ===
+																				totalSeasons;
+
+																		const newWatchList =
+																			allSeasonsNowSeen
+																				? false
+																				: watchList;
+
 																		setCheckedSeasons(
 																			newCheckedSeasons,
 																		);
+																		setWatchList(
+																			newWatchList,
+																		);
+
 																		saveWatchlistItem(
 																			{
 																				title: chosenTitle.Title,
 																				poster: chosenTitle.Poster,
-																				watchList,
+																				watchList:
+																					newWatchList,
 																				seen,
 																				checkedSeasons:
 																					newCheckedSeasons,
 																				totalSeasons,
 																				type: chosenTitle.Type,
+																				imdbID: chosenTitle.imdbID,
 																			},
 																		);
 																	}}
