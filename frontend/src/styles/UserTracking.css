@@ -1,0 +1,42 @@
+.bigList {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+}
+
+.listLink {
+	display: flex;
+	width: 100%;
+	text-decoration: none;
+	color: inherit;
+}
+
+.listBorder {
+	display: flex;
+	width: 100%;
+	max-width: 600px;
+	margin: 0 auto;
+	box-sizing: border-box;
+	border: 1px solid black;
+	gap: 1rem;
+	padding: 1rem;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.listPoster {
+	height: 25dvh;
+	aspect-ratio: 2/3;
+	flex-shrink: 0;
+	object-fit: contain;
+}
+
+.listText,
+.listTitle,
+.listInfo {
+	margin: 0;
+	padding: 0;
+}
