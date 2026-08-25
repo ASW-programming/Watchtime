@@ -3,9 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { selectedTitle } from "../utils/calls";
 import "../styles/SelectedInformation.css";
 import Checkbox from "./Checkbox";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BaseBtn from "./BaseBtn";
 import { ReturnIcon } from "../assets/Icons";
+import {
+	getWatchlistStorage,
+	saveWatchlistItem,
+	isFullySeen,
+} from "../utils/watchlist";
 
 function SelectedInformation() {
 	const { id } = useParams<{ id: string }>();
@@ -13,6 +18,7 @@ function SelectedInformation() {
 
 	const [watchList, setWatchList] = useState(false);
 	const [seen, setSeen] = useState(false);
+	const [checkedSeasons, setCheckedSeasons] = useState<number[]>([]);
 
 	const {
 		data: chosenTitle,
@@ -26,7 +32,18 @@ function SelectedInformation() {
 		refetchOnWindowFocus: false,
 	});
 
-	const [checkedSeasons, setCheckedSeasons] = useState<number[]>([]);
+	useEffect(() => {
+		if (!chosenTitle) return;
+
+		const fullList = getWatchlistStorage();
+		const existing = fullList[chosenTitle.Title];
+
+		if (existing) {
+			setWatchList(existing.watchList);
+			setSeen(existing.seen);
+			setCheckedSeasons(existing.checkedSeasons ?? []);
+		}
+	}, [chosenTitle]);
 
 	if (isLoading) {
 		return (
@@ -58,6 +75,17 @@ function SelectedInformation() {
 	}
 
 	const isSeries = chosenTitle.Type == "series";
+
+	const allSeasonsSeen = isFullySeen({
+		title: chosenTitle.Title,
+		poster: chosenTitle.Poster,
+		watchList,
+		seen,
+		checkedSeasons,
+		totalSeasons,
+		type: chosenTitle.Type,
+		imdbID: chosenTitle.imdbID,
+	});
 
 	return (
 		<div className="selectedContent">
@@ -97,9 +125,19 @@ function SelectedInformation() {
 												id={`checkbox-watchlist`}
 												checked={watchList}
 												onChange={(e) => {
-													setWatchList(
-														e.target.checked,
-													);
+													const newWatchList =
+														e.target.checked;
+													setWatchList(newWatchList);
+													saveWatchlistItem({
+														title: chosenTitle.Title,
+														poster: chosenTitle.Poster,
+														watchList: newWatchList,
+														seen,
+														checkedSeasons,
+														totalSeasons,
+														type: chosenTitle.Type,
+														imdbID: chosenTitle.imdbID,
+													});
 												}}
 											/>
 											<label
@@ -119,10 +157,30 @@ function SelectedInformation() {
 														id={`checkbox-seen`}
 														checked={seen}
 														onChange={(e) => {
-															setSeen(
+															const newSeen =
 																e.target
-																	.checked,
+																	.checked;
+															setSeen(newSeen);
+
+															const newWatchList =
+																newSeen
+																	? false
+																	: watchList;
+															setWatchList(
+																newWatchList,
 															);
+
+															saveWatchlistItem({
+																title: chosenTitle.Title,
+																poster: chosenTitle.Poster,
+																watchList:
+																	newWatchList,
+																seen: newSeen,
+																checkedSeasons,
+																totalSeasons,
+																type: chosenTitle.Type,
+																imdbID: chosenTitle.imdbID,
+															});
 														}}
 													/>
 													<label
@@ -151,6 +209,11 @@ function SelectedInformation() {
 
 							{isSeries && (
 								<div className="detailsColumn detailsMiddle">
+									<p>
+										{allSeasonsSeen
+											? "Series Completed!"
+											: "Not Completed"}
+									</p>
 									<table className="seasonTable">
 										<thead className="tableHead">
 											<tr>
@@ -174,33 +237,61 @@ function SelectedInformation() {
 																	onChange={(
 																		e,
 																	) => {
+																		let newCheckedSeasons: number[];
+
 																		if (
 																			e
 																				.target
 																				.checked
 																		) {
-																			setCheckedSeasons(
-																				(
-																					prev,
-																				) => [
-																					...prev,
+																			newCheckedSeasons =
+																				[
+																					...checkedSeasons,
 																					s,
-																				],
-																			);
+																				];
 																		} else {
-																			setCheckedSeasons(
-																				(
-																					prev,
-																				) =>
-																					prev.filter(
-																						(
-																							season,
-																						) =>
-																							season !==
-																							s,
-																					),
-																			);
+																			newCheckedSeasons =
+																				checkedSeasons.filter(
+																					(
+																						season,
+																					) =>
+																						season !==
+																						s,
+																				);
 																		}
+
+																		const allSeasonsNowSeen =
+																			totalSeasons >
+																				0 &&
+																			newCheckedSeasons.length ===
+																				totalSeasons;
+
+																		const newWatchList =
+																			allSeasonsNowSeen
+																				? false
+																				: watchList;
+
+																		setCheckedSeasons(
+																			newCheckedSeasons,
+																		);
+																		setWatchList(
+																			newWatchList,
+																		);
+
+																		saveWatchlistItem(
+																			{
+																				title: chosenTitle.Title,
+																				poster: chosenTitle.Poster,
+																				watchList:
+																					newWatchList,
+																				seen,
+																				checkedSeasons:
+																					newCheckedSeasons,
+																				totalSeasons,
+																				type: chosenTitle.Type,
+																				imdbID: chosenTitle.imdbID,
+																			},
+																		);
 																	}}
 																/>
 																<label
